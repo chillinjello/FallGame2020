@@ -115,6 +115,9 @@ public class Character : MonoBehaviour
 
         SnapMovement();
 
+        if (Managers._enemy.Enemies.Find(e => newX == e.xPos && e.yPos == newY) != null)
+            return false;
+
         SetPosition(newX, newY);
         SetMoveSprite(newX, newY);
         return true;

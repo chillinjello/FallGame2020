@@ -6,7 +6,12 @@ public class TurnManager : MonoBehaviour, IGameManager {
     public ManagerStatus status { get; private set; }
 
     [SerializeField]
+    GameObject PlayerPrefab;
     public Player Player;
+
+    [SerializeField]
+    GameObject startGameScreen;
+    bool gameStarted = false;
 
     bool playerTurn = true;
 
@@ -19,6 +24,8 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     public void Update() {
+        if (HandleGameStart()) return;
+
         if (Player == null) {
             Player = FindObjectOfType<Player>();
             return;
@@ -88,6 +95,27 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     private void PostEnemyTurn() {
+        Managers._enemy.TickSpawnPoints();
+    }
 
+    private void BeginGame() {
+        Player = Instantiate(PlayerPrefab).GetComponent<Player>();
+
+        Managers._enemy.StartGame();
+    }
+
+    private bool HandleGameStart() {
+        if (gameStarted) return false;
+
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            gameStarted = true;
+            startGameScreen.SetActive(false);
+            BeginGame();
+        }
+        
+        if (gameStarted) return false;
+        
+        startGameScreen.SetActive(true);
+        return true;
     }
 }

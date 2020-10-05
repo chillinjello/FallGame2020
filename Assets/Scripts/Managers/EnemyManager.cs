@@ -7,24 +7,28 @@ public class EnemyManager : MonoBehaviour, IGameManager
     public ManagerStatus status { get; private set; }
 
     [SerializeField]
-    GameObject PlaceholderEnemy;
+    GameObject PlaceholderEnemyPrefab;
+
+    [SerializeField]
+    GameObject SpawnPointPrefab;
 
     public List<Enemy> Enemies = new List<Enemy>();
+
+    public List<SpawnPoint> SpawnPoints = new List<SpawnPoint>();
 
     public void Startup() {
         status = ManagerStatus.Initializing;
         Debug.Log("Started Enemy Manager...");
-
-
+        
         status = ManagerStatus.Started;
     }
 
     public bool moving = false;
 
     private void Awake() {
-        GameObject testEnemy = Instantiate(PlaceholderEnemy);
-        Enemies.Add(testEnemy.GetComponent<Enemy>());
-        testEnemy.GetComponent<Enemy>().MoveCharacter(0, 0);
+        //GameObject testEnemy = Instantiate(PlaceholderEnemyPrefab);
+        //Enemies.Add(testEnemy.GetComponent<Enemy>());
+        //testEnemy.GetComponent<Enemy>().MoveCharacter(0, 0);
     }
 
     private void Update() {
@@ -43,5 +47,64 @@ public class EnemyManager : MonoBehaviour, IGameManager
             enemy.EnemyTurn();
         }
         moving = true;
+    }
+
+    public void StartGame() {
+        //create starting spawn point
+        int x = 2;
+        int y = 2;
+        while ((x == 2 && y == 2)
+            || (x == 2 && y == 3)
+            || (x == 3 && y == 2)
+            || (x == 3 && y == 3)) {
+            x = Random.Range(0, 6);
+            y = Random.Range(0, 6);
+        }
+
+        CreateNewSpawnPoint(x, y);
+    }
+
+    public void CreateRandomSpawnPoint() {
+        CreateNewSpawnPoint(Random.Range(0, 6), Random.Range(0, 6));
+    }
+
+    public void CreateNewSpawnPoint(int x, int y) {
+        if (!BoardManager.CheckValidCoord(x, y)) {
+            Debug.Log("Not valid coord!!!");
+            return;
+        }
+
+        var newSpawn = Instantiate(SpawnPointPrefab).GetComponent<SpawnPoint>();
+        SpawnPoints.Add(newSpawn);
+        newSpawn.SetPosition(x, y);
+    }
+    
+    public void SpawnEnemy(int x, int y) {
+        GameObject testEnemy = Instantiate(PlaceholderEnemyPrefab);
+        Enemies.Add(testEnemy.GetComponent<Enemy>());
+        testEnemy.GetComponent<Enemy>().MoveCharacter(x, y);
+    }
+
+    public void TickSpawnPoints() {
+        for (int i = SpawnPoints.Count - 1; i >= 0; i--) {
+            var spawnPoint = SpawnPoints[i];
+            spawnPoint.SubtractTimer(1);
+
+            if (spawnPoint.GetTime() <= 0) {
+                // check to see if an enemy or play is on it
+                var playerPos = Managers._turn.Player.GetPos();
+                if (playerPos != spawnPoint.coord && Enemies.Find(e => e.GetPos() == spawnPoint.coord) == null) {
+                    //spawn enemy 
+                    SpawnEnemy((int)spawnPoint.coord.x, (int)spawnPoint.coord.y);
+
+                    //remove point
+                    SpawnPoints.RemoveAt(i);
+                    Destroy(spawnPoint.gameObject);
+
+                    //create new Spawn Point
+                    CreateRandomSpawnPoint();
+                }
+            }
+        }
     }
 }

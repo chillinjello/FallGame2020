@@ -22,7 +22,7 @@ public class BoardManager : MonoBehaviour, IGameManager {
 
         switch (y) {
             case 0:
-                coord.y = 2f;
+                coord.y = 1.5f;
                 switch (x) {
                     case 0:
                         coord.x = -3.313f;
@@ -46,23 +46,23 @@ public class BoardManager : MonoBehaviour, IGameManager {
                 coord.x = -3.34375f + x * 1.375f;
                 break;
             case 1:
-                coord.y = 1f;
+                coord.y = .5f;
                 coord.x = -3.46875f + x * 1.40625f;
                 break;
             case 2:
-                coord.y = 0f;
+                coord.y = -.5f;
                 coord.x = -3.5625f + x * 1.4375f;
                 break;
             case 3:
-                coord.y = -1;
+                coord.y = -1.5f;
                 coord.x = -3.75f + x * 1.5f;
                 break;
             case 4:
-                coord.y = -2f;
+                coord.y = -2.5f;
                 coord.x = -3.875f + x * 1.5625f;
                 break;
             case 5:
-                coord.y = -3f;
+                coord.y = -3.5f;
                 coord.x = -4f + x * 1.625f;
                 break;
         }
@@ -73,7 +73,8 @@ public class BoardManager : MonoBehaviour, IGameManager {
 
     static public Vector2 GetCharacterPosition(Sprite sprite, int x, int y) {
         Vector2 coord = GetCoords(x, y);
-        
+
+        coord.y += .5f;
 
         return coord;
     }
