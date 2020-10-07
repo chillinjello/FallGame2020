@@ -24,6 +24,8 @@ public class EnemyManager : MonoBehaviour, IGameManager
     }
 
     public bool moving = false;
+    public bool attacking = false;
+    public bool movingOrAttacking { get { return moving || attacking; } }
 
     private void Awake() {
         //GameObject testEnemy = Instantiate(PlaceholderEnemyPrefab);
@@ -32,19 +34,28 @@ public class EnemyManager : MonoBehaviour, IGameManager
     }
 
     private void Update() {
-        if (moving) {
+        if (movingOrAttacking) {
             //move enemies and see if any are still moving
-            bool stillMoving = false;
+            attacking = false;
+            moving = false;
             foreach(var enemy in Enemies) {
-                stillMoving = enemy.moving;
+                attacking = enemy.attacking || attacking;
+                moving = enemy.moving || moving;
             }
-            moving = stillMoving;
         }
     }
+    
 
-    public void EnemyTurn() {
+    public void EnemyAttack() {
         foreach (var enemy in Enemies) {
-            enemy.EnemyTurn();
+            enemy.EnemyAttack();
+        }
+        attacking = true;
+    }
+
+    public void EnemyMove() {
+        foreach (var enemy in Enemies) {
+            enemy.EnemyMove();
         }
         moving = true;
     }
@@ -101,10 +112,23 @@ public class EnemyManager : MonoBehaviour, IGameManager
                     SpawnPoints.RemoveAt(i);
                     Destroy(spawnPoint.gameObject);
 
+                }
+
+                if (spawnPoint.GetTime() == 0) {
                     //create new Spawn Point
                     CreateRandomSpawnPoint();
                 }
             }
         }
+    }
+    
+    public void ClearGame() {
+        //remove enemies and spawn points
+        Enemies.ForEach(e => Destroy(e.gameObject));
+        SpawnPoints.ForEach(s => Destroy(s.gameObject));
+
+        //clear lists
+        Enemies.Clear();
+        SpawnPoints.Clear();
     }
 }

@@ -8,72 +8,80 @@ public class Enemy : Character {
     const int BASE_ATTACK_DAMAGE = 1;
 
     bool stunned = false;
+    bool attacked = false;
 
     public override void Attack(int amount) {
         base.Attack(amount);
         stunned = true;
     }
 
-    public virtual void EnemyTurn() {
+    public virtual void EnemyAttack() {
         if (stunned) {
+            return;
+        }
+        MoveDirections playerDirection = CheckIfPlayerIsInRange();
+        if (playerDirection != MoveDirections.none) {
+            AttackPlayer(playerDirection);
+            attacked = true;
+        }
+    }
+
+    public virtual void EnemyMove() {
+        if (stunned || attacked) {
             stunned = false;
+            attacked = false;
             return;
         }
 
-        if (CheckIfPlayerIsInRange()) {
-            AttackPlayer();
-        }
-        else {
-            MoveEnemy();
-        }
+        MoveEnemy();
     }
 
-    protected virtual void AttackPlayer() {
+    protected virtual void AttackPlayer(MoveDirections direction) {
         Managers._turn.Player.Attack(attackDamage);
+        AttackAnimation(direction);
     }
 
-    protected virtual bool CheckIfPlayerIsInRange() {
+    protected virtual MoveDirections CheckIfPlayerIsInRange() {
         Vector2 playerCoord = Managers._turn.Player.GetPos();
         Vector2 enemyCoord = GetPos();
 
         if (playerCoord.y == enemyCoord.y) {
             if (playerCoord.x + 1 == enemyCoord.x) {
-                return true;
+                return MoveDirections.left;
             }
             else if (playerCoord.x - 1 == enemyCoord.x) {
-                return true;
+                return MoveDirections.right;
             }
         }
         else if (playerCoord.x == enemyCoord.x) {
             if (playerCoord.y + 1 == enemyCoord.y) {
-                return true;
+                return MoveDirections.up;
             }
             else if (playerCoord.y - 1 == enemyCoord.y) {
-                return true;
+                return MoveDirections.down;
             }
         }
 
-        return false;
+        return MoveDirections.none;
     }
 
     protected virtual void MoveEnemy() {
-        Vector2 distance = Managers._turn.Player.GetPos() - GetPos();
+        var emptySpaces = GetAdjacentEmptySpaces();
+        if (emptySpaces.Count == 0) return;
 
-        if (Mathf.Abs(distance.x) > Mathf.Abs(distance.y)) {
-            if (distance.x > 0) {
-                MoveCharacter(MoveDirections.right);
-            }
-            else {
-                MoveCharacter(MoveDirections.left);
-            }
-        }
-        else {
-            if (distance.y > 0) {
-                MoveCharacter(MoveDirections.down);
-            }
-            else {
-                MoveCharacter(MoveDirections.up);
-            }
-        }
+        var player = Managers._turn.Player;
+
+        emptySpaces.Sort((s1, s2) => player.ManhattanDistance((int)s1.x, (int)s1.y) - player.ManhattanDistance((int)s2.x, (int)s2.y));
+        Vector2 selectedSpace = emptySpaces[0];
+        
+        if (selectedSpace == Vector2.up)
+            MoveCharacter(MoveDirections.down);
+        if (selectedSpace == Vector2.down)
+            MoveCharacter(MoveDirections.up);
+        if (selectedSpace == Vector2.left)
+            MoveCharacter(MoveDirections.left);
+        if (selectedSpace == Vector2.right)
+            MoveCharacter(MoveDirections.right);
+        
     }
 }

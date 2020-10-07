@@ -18,6 +18,13 @@ public class SpawnPoint : MonoBehaviour
 
     string[] timeValues = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
 
+    private void Awake() {
+        var textRenderer = spawnText.gameObject.GetComponent<MeshRenderer>();
+        var imageRenderer = GetComponent<SpriteRenderer>();
+        textRenderer.sortingOrder = imageRenderer.sortingOrder;
+        textRenderer.sortingLayerID = imageRenderer.sortingLayerID;
+    }
+
     private void Update() {
         if (timer < 0) {
             spawnText.text = timeValues[0];

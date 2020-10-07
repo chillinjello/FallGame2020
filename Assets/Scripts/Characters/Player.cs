@@ -5,6 +5,9 @@ using UnityEngine;
 public class Player : Character
 {
     [SerializeField]
+    bool invincible = false;
+
+    [SerializeField]
     Vector2 StartingPos = new Vector2(2, 2);
 
     const int PLAYER_ATTACK = 1;
@@ -12,11 +15,19 @@ public class Player : Character
     protected override void Awake() {
         base.Awake();
 
-        MoveCharacter((int)StartingPos.x, (int)StartingPos.y);
+        int startingX = Random.Range(2, 4);
+        int startingY = Random.Range(2, 4);
+        MoveCharacter(startingX, startingY);
     }
 
     public bool PlayerTurn(MoveDirections direction) {
         return MoveCharacter(direction);
+    }
+
+    public override void Attack(int amount) {
+        if (!invincible) {
+            base.Attack(amount);
+        }
     }
 
     public override bool MoveCharacter(MoveDirections direction) {
@@ -50,6 +61,7 @@ public class Player : Character
         var enemy = Enemies.Find(e => e.xPos == newX && e.yPos == newY);
         if (enemy != null) {
             enemy.Attack(PLAYER_ATTACK);
+            AttackAnimation(direction);
             return true;
         }
 

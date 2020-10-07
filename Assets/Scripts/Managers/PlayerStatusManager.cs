@@ -21,6 +21,8 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
     
     void Update()
     {
+        if (Player == null) return;
+
         if (Player.currentHealth < 0) {
             PlayerHealthText.text = playerHealthValues[0];
         }

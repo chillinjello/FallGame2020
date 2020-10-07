@@ -13,7 +13,16 @@ public class TurnManager : MonoBehaviour, IGameManager {
     GameObject startGameScreen;
     bool gameStarted = false;
 
-    bool playerTurn = true;
+    private enum Turn {
+        playerTurn,
+        enemyAttack,
+        enemyMove
+    }
+    Turn turn = Turn.playerTurn;
+
+    [SerializeField]
+    GameObject gameOverScreen;
+    bool gameOver = false;
 
     public void Startup() {
         status = ManagerStatus.Initializing;
@@ -25,21 +34,28 @@ public class TurnManager : MonoBehaviour, IGameManager {
 
     public void Update() {
         if (HandleGameStart()) return;
+        if (HandleGameOver()) return;
 
         if (Player == null) {
             Player = FindObjectOfType<Player>();
             return;
         }
         
-        if (playerTurn && HandlePlayerInput()) {
+        if (turn == Turn.playerTurn && !Managers._enemy.movingOrAttacking && HandlePlayerInput()) {
             PostPlayerTurn();
-            playerTurn = false;
+            turn = Turn.enemyAttack;
         }
-        else if (!playerTurn && !Player.moving) {
-            Managers._enemy.EnemyTurn();
-            PostEnemyTurn();
-            playerTurn = true;
+        else if (turn == Turn.enemyAttack && !Player.movingOrAttacking && !Managers._enemy.movingOrAttacking) {
+            Managers._enemy.EnemyAttack();
+            PostEnemyAttack();
+            turn = Turn.enemyMove;
         }
+        else if (turn == Turn.enemyMove && !Player.movingOrAttacking && !Managers._enemy.movingOrAttacking) {
+            Managers._enemy.EnemyMove();
+            PostEnemyMove();
+            turn = Turn.playerTurn;
+        }
+        /*
         else if (!playerTurn && GettingPlayerInput()) {
             Managers._enemy.EnemyTurn();
             PostEnemyTurn();
@@ -48,6 +64,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
             PostPlayerTurn();
             playerTurn = false;
         }
+        */
     }
 
     private bool HandlePlayerInput() {
@@ -92,16 +109,42 @@ public class TurnManager : MonoBehaviour, IGameManager {
                 Enemies.RemoveAt(i);
             }
         }
+
+        PostEveryTurn();
     }
 
-    private void PostEnemyTurn() {
+    private void PostEnemyAttack() {
+
+        PostEveryTurn();
+    }
+
+    private void PostEnemyMove() {
         Managers._enemy.TickSpawnPoints();
+
+        PostEveryTurn();
+    }
+
+    private void PostEveryTurn() {
+        SortCharacterLayers();
+        CheckGameState();
     }
 
     private void BeginGame() {
         Player = Instantiate(PlayerPrefab).GetComponent<Player>();
 
         Managers._enemy.StartGame();
+    }
+
+    private void ClearGame() {
+        //Remove Player
+        Destroy(Player.gameObject);
+        //Remove Enemies
+        Managers._enemy.ClearGame();
+    }
+
+    private void RestartGame() {
+        ClearGame();
+        BeginGame();
     }
 
     private bool HandleGameStart() {
@@ -117,5 +160,60 @@ public class TurnManager : MonoBehaviour, IGameManager {
         
         startGameScreen.SetActive(true);
         return true;
+    }
+
+    private void CheckGameState() {
+        if (!Player.isAlive()) {
+            gameOver = true;
+            gameOverScreen.SetActive(true);
+        }
+    }
+
+    private bool HandleGameOver() {
+        if (!gameOver) return false;
+
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            gameStarted = true;
+            gameOver = false;
+            gameOverScreen.SetActive(false);
+            RestartGame();
+        }
+
+        if (!gameOver) return false;
+
+        gameOverScreen.SetActive(true);
+        return true;
+    }
+
+    private void SortCharacterLayers() {
+        List<GameObject> characters = new List<GameObject>();
+
+        Managers._enemy.Enemies.ForEach(e => characters.Add(e.gameObject));
+        characters.Add(Player.gameObject);
+
+        characters.Sort((e1, e2) => {
+            if (e1.transform.position.y < e2.transform.position.y) {
+                return -1;
+            }
+            else if (e1.transform.position.y > e2.transform.position.y) {
+                return 1;
+            }
+            else {
+                if (e1.transform.position.x > e2.transform.position.x)
+                    return 1;
+                else if (e1.transform.position.x < e2.transform.position.x)
+                    return -1;
+                else
+                    return 0;
+            }
+        });
+
+        float z = 0;
+        float zIncrement = 0.1f;
+        for (int i = 0; i < characters.Count; i++) {
+            var position = characters[i].transform.position;
+            characters[i].transform.position = new Vector3(position.x, position.y, z);
+            z += zIncrement;
+        }
     }
 }
