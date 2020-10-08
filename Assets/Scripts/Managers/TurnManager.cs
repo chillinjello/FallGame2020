@@ -125,14 +125,16 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     private void PostEveryTurn() {
-        SortCharacterLayers();
+        Managers._candy.CandyUpdate();
         CheckGameState();
+        SortCharacterLayers();
     }
 
     private void BeginGame() {
         Player = Instantiate(PlayerPrefab).GetComponent<Player>();
 
         Managers._enemy.StartGame();
+        Managers._candy.StartGame();
     }
 
     private void ClearGame() {
@@ -140,6 +142,8 @@ public class TurnManager : MonoBehaviour, IGameManager {
         Destroy(Player.gameObject);
         //Remove Enemies
         Managers._enemy.ClearGame();
+        //Remove Candies
+        Managers._candy.ClearGame();
     }
 
     private void RestartGame() {
@@ -189,6 +193,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
         List<GameObject> characters = new List<GameObject>();
 
         Managers._enemy.Enemies.ForEach(e => characters.Add(e.gameObject));
+        Managers._enemy.Walls.ForEach(w => characters.Add(w.gameObject));
         characters.Add(Player.gameObject);
 
         characters.Sort((e1, e2) => {

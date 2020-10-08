@@ -93,6 +93,40 @@ public class BoardManager : MonoBehaviour, IGameManager {
         return true;
     }
 
+    static public List<Vector2> GetInnerRingCoords() {
+        List<Vector2> innerRingPositions = new List<Vector2>();
+        for (int x = 0; x < 6; x++) {
+            for (int y = 0; y < 6; y++) {
+                if (x == 1 || x == 4 || y == 1 || y == 4) {
+                    innerRingPositions.Add(new Vector2(x, y));
+                }
+            }
+        }
+        return innerRingPositions;
+    }
+
+    static public List<Vector2> GetOuterRingCoords() {
+        List<Vector2> outerRingPositions = new List<Vector2>();
+        for (int x = 0; x < 6; x++) {
+            for (int y = 0; y < 6; y++) {
+                if (x == 0 || x == 5 || y == 0 || y == 5) {
+                    outerRingPositions.Add(new Vector2(x, y));
+                }
+            }
+        }
+        return outerRingPositions;
+    }
+
+    static public List<Vector2> GetCenterCoords() {
+        List<Vector2> centerRingPositions = new List<Vector2>();
+        centerRingPositions.Add(new Vector2(2, 2));
+        centerRingPositions.Add(new Vector2(2, 3));
+        centerRingPositions.Add(new Vector2(3, 2));
+        centerRingPositions.Add(new Vector2(3, 3));
+
+        return centerRingPositions;
+    }
+
     static public bool CoinFlip () {
         return (Random.Range(0, 2) > 0.5);
     }

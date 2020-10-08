@@ -6,11 +6,13 @@ using UnityEngine;
 [RequireComponent(typeof(BoardManager))]
 [RequireComponent(typeof(EnemyManager))]
 [RequireComponent(typeof(PlayerStatusManager))]
+[RequireComponent(typeof(CandyManager))]
 public class Managers : MonoBehaviour {
     public static TurnManager _turn { get; private set; }
     public static BoardManager _board { get; private set; }
     public static EnemyManager _enemy { get; private set; }
     public static PlayerStatusManager _player { get; private set; }
+    public static CandyManager _candy { get; private set; }
 
     private List<IGameManager> _startSequence;
 
@@ -19,12 +21,14 @@ public class Managers : MonoBehaviour {
         _board = GetComponent<BoardManager>();
         _enemy = GetComponent<EnemyManager>();
         _player = GetComponent<PlayerStatusManager>();
+        _candy = GetComponent<CandyManager>();
 
         _startSequence = new List<IGameManager>();
         _startSequence.Add(_turn);
         _startSequence.Add(_board); 
         _startSequence.Add(_enemy); 
         _startSequence.Add(_player); 
+        _startSequence.Add(_candy); 
 
         StartCoroutine(StartupManagers());
     }

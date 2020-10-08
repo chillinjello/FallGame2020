@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnPoint : MonoBehaviour
+public class SpawnPoint : BoardItem
 {
     [SerializeField]
     TextMesh spawnText;
-
-    public Vector2 coord = Vector2.zero;
     
-    const int DEFAULT_TIMER = 3;
+    
+    const int DEFAULT_TIMER = 5;
     int timer = DEFAULT_TIMER;
     public int GetTime() { return timer; }
     public void SetTimer(int time) { timer = time; }
@@ -39,6 +38,7 @@ public class SpawnPoint : MonoBehaviour
 
     public void SetPosition(int x, int y) {
         transform.position = BoardManager.GetCoords(x, y);
-        coord = new Vector2(x, y);
+        xPos = x;
+        yPos = y;
     }
 }

@@ -73,14 +73,15 @@ public class Enemy : Character {
 
         emptySpaces.Sort((s1, s2) => player.ManhattanDistance((int)s1.x, (int)s1.y) - player.ManhattanDistance((int)s2.x, (int)s2.y));
         Vector2 selectedSpace = emptySpaces[0];
-        
-        if (selectedSpace == Vector2.up)
+
+        Vector2 direction = selectedSpace - new Vector2(xPos, yPos);
+        if (direction == Vector2.up)
             MoveCharacter(MoveDirections.down);
-        if (selectedSpace == Vector2.down)
+        if (direction == Vector2.down)
             MoveCharacter(MoveDirections.up);
-        if (selectedSpace == Vector2.left)
+        if (direction == Vector2.left)
             MoveCharacter(MoveDirections.left);
-        if (selectedSpace == Vector2.right)
+        if (direction == Vector2.right)
             MoveCharacter(MoveDirections.right);
         
     }

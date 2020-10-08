@@ -608,16 +608,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1277553478, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82, type: 3}
-      propertyPath: PlaceholderEnemyPrefab
-      value: 
-      objectReference: {fileID: 6888392007405651072, guid: c62937d0fd5d2d74eb0df196297904b0,
-        type: 3}
-    - target: {fileID: 1277553478, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82, type: 3}
-      propertyPath: SpawnPointPrefab
-      value: 
-      objectReference: {fileID: 8688337758375777259, guid: fa36f8047552ac44089e925b298cef64,
-        type: 3}
     - target: {fileID: 333408748944862771, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
         type: 3}
       propertyPath: PlayerHealthText
@@ -628,12 +618,6 @@ PrefabInstance:
       propertyPath: startGameScreen
       value: 
       objectReference: {fileID: 451123647}
-    - target: {fileID: 2406517245879260736, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
-        type: 3}
-      propertyPath: PlayerPrefab
-      value: 
-      objectReference: {fileID: 7497712044354644614, guid: 7abf6e5c04a1a944cb80ce6ff9b8f9d0,
-        type: 3}
     - target: {fileID: 2406517245879260736, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
         type: 3}
       propertyPath: gameOverScreen

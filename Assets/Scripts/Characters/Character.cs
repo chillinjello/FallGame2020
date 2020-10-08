@@ -2,23 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Character : MonoBehaviour
+public class Character : BoardItem
 {
     [SerializeField]
     SpriteRenderer sprite;
-
-
-    public int xPos = -1;
-    public int yPos = -1;
-    public Vector2 GetPos() { return new Vector2(xPos, yPos); }
-
-    public enum MoveDirections {
-        up,
-        down,
-        left,
-        right,
-        none
-    }
+    protected void FlipSprite(bool f) { sprite.flipX = f; }
+    
 
     //Moving
     [SerializeField]
@@ -121,6 +110,13 @@ public class Character : MonoBehaviour
     }
 
     protected void SetPosition(int x, int y) {
+        if (x > xPos) {
+            FlipSprite(false);
+        }
+        else if (x < xPos) {
+            FlipSprite(true); 
+        }
+
         xPos = x;
         yPos = y;
     }
@@ -143,9 +139,11 @@ public class Character : MonoBehaviour
                 break;
             case MoveDirections.right:
                 attackSquarePosition = BoardManager.GetCharacterPosition(sprite.sprite, xPos + 1, yPos);
+                FlipSprite(false);
                 break;
             case MoveDirections.left:
                 attackSquarePosition = BoardManager.GetCharacterPosition(sprite.sprite, xPos - 1, yPos);
+                FlipSprite(true);
                 break;
         }
 
@@ -207,67 +205,6 @@ public class Character : MonoBehaviour
         SetMoveSprite(newX, newY);
         return true;
     }
-
-    protected List<Character> GetAdjacentCharacters() {
-        List<Character> adjacentCharacters = new List<Character>();
-        adjacentCharacters.AddRange(Managers._enemy.Enemies);
-        adjacentCharacters.Add(Managers._turn.Player);
-
-        adjacentCharacters = adjacentCharacters.FindAll(c => {
-            if (c.xPos == xPos) {
-                if (c.yPos == yPos + 1 || c.yPos == yPos - 1)
-                    return true;
-            }
-            if (c.yPos == yPos) {
-                if (c.xPos == xPos + 1 || c.xPos == xPos - 1)
-                    return true;
-            }
-            return false;
-        });
-
-        return adjacentCharacters;
-    }
-
-    protected List<Vector2> GetAdjacentEmptySpaces() {
-        List<Vector2> emptySpace = new List<Vector2>();
-
-        emptySpace.Add(new Vector2(xPos + 1, yPos));
-        emptySpace.Add(new Vector2(xPos - 1, yPos));
-        emptySpace.Add(new Vector2(xPos, yPos + 1));
-        emptySpace.Add(new Vector2(xPos, yPos - 1));
-
-        var characterSpaces = GetAdjacentCharacters();
-        emptySpace = emptySpace.FindAll(e => {
-            return -1 == characterSpaces.FindIndex(c => e.x == c.xPos && e.y == c.yPos) && BoardManager.CheckValidCoord((int)e.x, (int)e.y) ;
-        });
-
-        return emptySpace;
-    }
-
-    protected MoveDirections GetDirectionFromCoords(int xi, int yi, int xf, int yf) {
-        if (xi == xf) {
-            if (yi == yf + 1) {
-                return MoveDirections.up;
-            }
-            if (yi == yf - 1) {
-                return MoveDirections.down;
-            }
-        }
-        if (yi == yf) {
-            if (xi == xf + 1) {
-                return MoveDirections.left;
-            }
-            if (xi == xf - 1) {
-                return MoveDirections.right;
-            }
-        }
-        return MoveDirections.none;
-    }
-
-    public int ManhattanDistance(int x, int y) {
-        return Mathf.Abs(xPos - x) + Mathf.Abs(yPos - y);
-    }
-
 
     public virtual void CharacterShake() {
         shakeAmount = DEFAULT_SHAKE_AMOUNT;

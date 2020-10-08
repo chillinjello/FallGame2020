@@ -54,19 +54,36 @@ public class Player : Character
             return false;
         }
 
-        SnapMovement();
 
         //try hit
-        var Enemies = Managers._enemy.Enemies;
-        var enemy = Enemies.Find(e => e.xPos == newX && e.yPos == newY);
-        if (enemy != null) {
-            enemy.Attack(PLAYER_ATTACK);
+        List<BoardItem> collidableObjects = new List<BoardItem>();
+        collidableObjects.AddRange(Managers._enemy.Enemies);
+        collidableObjects.AddRange(Managers._enemy.Walls);
+        BoardItem collision = collidableObjects.Find(e => e.xPos == newX && e.yPos == newY);
+        if (collision != null) {
+            Enemy enemy = collision.gameObject.GetComponent<Enemy>();
+            if (enemy != null) {
+                enemy.Attack(PLAYER_ATTACK);
+            }
+            else {
+                return false;
+            }
+
             AttackAnimation(direction);
+            SnapMovement();
             return true;
         }
+        else {
+            //check if you moved onto candy
+            Candy candy = Managers._candy.Candies.Find(c => c.xPos == newX && c.yPos == newY);
+            if (candy != null) {
+                candy.PickUpCandy();
+            }
 
-        SetPosition(newX, newY);
-        SetMoveSprite(newX, newY);
-        return true;
+            SnapMovement();
+            SetPosition(newX, newY);
+            SetMoveSprite(newX, newY);
+            return true;
+        }
     }
 }

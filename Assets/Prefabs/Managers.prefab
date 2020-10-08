@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2406517245879260750}
   - component: {fileID: 1277553478}
   - component: {fileID: 333408748944862771}
+  - component: {fileID: 2636962062267928369}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -47,7 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb12a3e58ad10924eafe47d320ddf661, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPrefab: {fileID: 7497712044354644614, guid: 7abf6e5c04a1a944cb80ce6ff9b8f9d0,
+    type: 3}
   Player: {fileID: 0}
+  startGameScreen: {fileID: 0}
+  gameOverScreen: {fileID: 0}
 --- !u!114 &2406517245879260737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,9 +89,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96dc7f7c3842fea4484aa8bc17aef327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlaceholderEnemy: {fileID: 6888392007405651072, guid: c62937d0fd5d2d74eb0df196297904b0,
+  PlaceholderEnemyPrefab: {fileID: 6888392007405651072, guid: c62937d0fd5d2d74eb0df196297904b0,
     type: 3}
+  SpawnPointPrefab: {fileID: 8688337758375777259, guid: fa36f8047552ac44089e925b298cef64,
+    type: 3}
+  WallPrefab: {fileID: 2627203196317140223, guid: 4c07b5aff59a77e429fed7b0f5ad93c0,
+    type: 3}
+  Enemies: []
+  Walls: []
+  SpawnPoints: []
   moving: 0
+  attacking: 0
 --- !u!114 &333408748944862771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,3 +113,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerHealthText: {fileID: 0}
+--- !u!114 &2636962062267928369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2406517245879260748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad7b929a7de96848ac851a9550bf344, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlaceholderCandyPrefab: {fileID: 6252580824112801921, guid: f133e50d918665341b64bf8278f505cd,
+    type: 3}
+  Candies: []
