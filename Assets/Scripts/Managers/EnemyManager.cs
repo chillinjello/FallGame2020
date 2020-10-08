@@ -65,29 +65,31 @@ public class EnemyManager : MonoBehaviour, IGameManager
     }
 
     public void StartGame() {
-        int x;
-        int y;
-        //create walls
-        List<Vector2> innerWallPositions = BoardManager.GetInnerRingCoords();
-        List<Vector2> outerWallPositions = BoardManager.GetOuterRingCoords();
-        outerWallPositions = outerWallPositions.OrderBy(w => Random.value).ToList();
-        innerWallPositions = innerWallPositions.OrderBy(w => Random.value).ToList();
+        do {
+            ClearWalls();
 
-        for (int i = 0; i < 3; i++) {
-            Wall newWall = Instantiate(WallPrefab).GetComponent<Wall>();
-            newWall.SetWallPosition((int)innerWallPositions[i].x, (int)innerWallPositions[i].y);
-            Walls.Add(newWall);
-        }
-        for (int i = 0; i < 3; i++) {
-            Wall newWall = Instantiate(WallPrefab).GetComponent<Wall>();
-            newWall.SetWallPosition((int)outerWallPositions[i].x, (int)outerWallPositions[i].y);
-            Walls.Add(newWall);
-        }
+            //create walls
+            List<Vector2> innerWallPositions = BoardManager.GetInnerRingCoords();
+            List<Vector2> outerWallPositions = BoardManager.GetOuterRingCoords();
+            outerWallPositions = outerWallPositions.OrderBy(w => Random.value).ToList();
+            innerWallPositions = innerWallPositions.OrderBy(w => Random.value).ToList();
+
+            for (int i = 0; i < 3; i++) {
+                Wall newWall = Instantiate(WallPrefab).GetComponent<Wall>();
+                newWall.SetWallPosition((int)innerWallPositions[i].x, (int)innerWallPositions[i].y);
+                Walls.Add(newWall);
+            }
+            for (int i = 0; i < 3; i++) {
+                Wall newWall = Instantiate(WallPrefab).GetComponent<Wall>();
+                newWall.SetWallPosition((int)outerWallPositions[i].x, (int)outerWallPositions[i].y);
+                Walls.Add(newWall);
+            }
+        } while (Managers._turn.Player.SeeIfCharacterCanReachAllSpaces());
 
 
         //create starting spawn point
-        x = 2;
-        y = 2;
+        int x = 2;
+        int y = 2;
         while ((x == 2 && y == 2)
             || (x == 2 && y == 3)
             || (x == 3 && y == 2)
@@ -145,7 +147,6 @@ public class EnemyManager : MonoBehaviour, IGameManager
                     //remove point
                     SpawnPoints.RemoveAt(i);
                     Destroy(spawnPoint.gameObject);
-
                 }
 
                 if (spawnPoint.GetTime() == 0) {
@@ -157,14 +158,20 @@ public class EnemyManager : MonoBehaviour, IGameManager
     }
     
     public void ClearGame() {
-        //remove enemies and spawn points
+        ClearEnemies();
+        ClearSpawn();
+        ClearWalls();
+    }
+    private void ClearEnemies() {
         Enemies.ForEach(e => Destroy(e.gameObject));
-        SpawnPoints.ForEach(s => Destroy(s.gameObject));
-        Walls.ForEach(w => Destroy(w.gameObject));
-
-        //clear lists
         Enemies.Clear();
+    }
+    private void ClearSpawn() {
+        SpawnPoints.ForEach(s => Destroy(s.gameObject));
         SpawnPoints.Clear();
+    }
+    private void ClearWalls() {
+        Walls.ForEach(w => Destroy(w.gameObject));
         Walls.Clear();
     }
 

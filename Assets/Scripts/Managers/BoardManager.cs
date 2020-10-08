@@ -97,7 +97,10 @@ public class BoardManager : MonoBehaviour, IGameManager {
         List<Vector2> innerRingPositions = new List<Vector2>();
         for (int x = 0; x < 6; x++) {
             for (int y = 0; y < 6; y++) {
-                if (x == 1 || x == 4 || y == 1 || y == 4) {
+                if ((x == 1 && y != 0 && y != 5)
+                    || (x == 4 && y != 0 && y != 5)
+                    || (y == 1 && x != 0 && x != 5) 
+                    || (y == 4 && x != 0 && x != 5)) {
                     innerRingPositions.Add(new Vector2(x, y));
                 }
             }
@@ -109,12 +112,22 @@ public class BoardManager : MonoBehaviour, IGameManager {
         List<Vector2> outerRingPositions = new List<Vector2>();
         for (int x = 0; x < 6; x++) {
             for (int y = 0; y < 6; y++) {
-                if (x == 0 || x == 5 || y == 0 || y == 5) {
+                if (x == 0 || y == 0 || x == 5 || y == 5) {
                     outerRingPositions.Add(new Vector2(x, y));
                 }
             }
         }
         return outerRingPositions;
+    }
+
+    static public List<Vector2> GetAllCoords() {
+        List<Vector2> allCoords = new List<Vector2>();
+        for (int x = 0; x < 6; x++) {
+            for (int y = 0; y < 6; y++) {
+                allCoords.Add(new Vector2(x, y));
+            }
+        }
+        return allCoords;
     }
 
     static public List<Vector2> GetCenterCoords() {

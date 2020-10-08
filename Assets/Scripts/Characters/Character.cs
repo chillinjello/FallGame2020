@@ -240,4 +240,59 @@ public class Character : BoardItem
         }
         transform.position += new Vector3(shakeX, shakeY);
     }
+
+    public List<Vector2> GetAdjacentCoords(int x, int y) {
+        List<Vector2> adjacentCoords = new List<Vector2>();
+        if (BoardManager.CheckValidCoord(x + 1, y)) {
+            adjacentCoords.Add(new Vector2(x + 1,y));
+        }
+        if (BoardManager.CheckValidCoord(x - 1, y)) {
+            adjacentCoords.Add(new Vector2(x - 1, y));
+        }
+        if (BoardManager.CheckValidCoord(x, y + 1)) {
+            adjacentCoords.Add(new Vector2(x, y + 1));
+        }
+        if (BoardManager.CheckValidCoord(x, y - 1)) {
+            adjacentCoords.Add(new Vector2(x, y - 1));
+        }
+
+        return adjacentCoords;
+    }
+
+    public bool SeeIfCharacterCanReachAllSpaces() {
+        List<Vector2> allCoords = BoardManager.GetAllCoords();
+        List<Wall> walls = Managers._enemy.Walls;
+
+        for (int i = allCoords.Count - 1; i >= 0; i--) {
+            if (walls.FindIndex(w => w.xPos == allCoords[i].x && w.yPos == allCoords[i].y) != -1) {
+                allCoords.RemoveAt(i);
+            }
+        }
+
+        Stack<Vector2> coordStack = new Stack<Vector2>();
+        List<Vector2> visitedCoords = new List<Vector2>();
+        GetAdjacentCoords(xPos,yPos).ForEach(x => {
+            coordStack.Push(x);
+            visitedCoords.Add(x);
+        });
+        while (coordStack.Count > 0) {
+            Vector2 currentCoord = coordStack.Pop();
+
+            //check if coord is a wall
+            if (walls.FindIndex(w => w.xPos == currentCoord.x && w.yPos == currentCoord.y) != -1) {
+                continue;
+            }
+            
+            var newCoords = GetAdjacentCoords((int)currentCoord.x, (int)currentCoord.y);
+            newCoords.ForEach(n => {
+                if (visitedCoords.FindIndex(v => v.x == n.x && v.y == n.y) == -1) {
+                    visitedCoords.Add(n);
+                    coordStack.Push(n);
+                }
+            });
+        }
+        if (allCoords.Count != visitedCoords.Count) return false;
+
+        return true;
+    }
 }
