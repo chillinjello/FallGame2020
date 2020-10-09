@@ -37,10 +37,10 @@ public class BoardItem : MonoBehaviour {
 
         return adjacentCharacters;
     }
-    protected List<BoardItem> GetAdjacentBoardItems() {
+    protected List<BoardItem> GetAdjacentBoardItems(bool includePlayer = true) {
         List<BoardItem> adjacentBoardItems = new List<BoardItem>();
         adjacentBoardItems.AddRange(Managers._enemy.Enemies);
-        adjacentBoardItems.Add(Managers._turn.Player);
+        if (includePlayer) adjacentBoardItems.Add(Managers._turn.Player);
         adjacentBoardItems.AddRange(Managers._enemy.Walls);
 
         adjacentBoardItems = adjacentBoardItems.FindAll(c => {
@@ -57,7 +57,27 @@ public class BoardItem : MonoBehaviour {
 
         return adjacentBoardItems;
     }
-    protected List<Vector2> GetAdjacentEmptySpaces() {
+    public static List<BoardItem> GetAdjacentBoardItems(int x, int y, bool includePlayer = true) {
+        List<BoardItem> adjacentBoardItems = new List<BoardItem>();
+        adjacentBoardItems.AddRange(Managers._enemy.Enemies);
+        if (includePlayer) adjacentBoardItems.Add(Managers._turn.Player);
+        adjacentBoardItems.AddRange(Managers._enemy.Walls);
+
+        adjacentBoardItems = adjacentBoardItems.FindAll(c => {
+            if (c.xPos == x) {
+                if (c.yPos == y + 1 || c.yPos == y - 1)
+                    return true;
+            }
+            if (c.yPos == y) {
+                if (c.xPos == x + 1 || c.xPos == x - 1)
+                    return true;
+            }
+            return false;
+        });
+
+        return adjacentBoardItems;
+    }
+    protected List<Vector2> GetAdjacentEmptySpaces(bool includePlayer = true) {
         List<Vector2> emptySpace = new List<Vector2>();
 
         emptySpace.Add(new Vector2(xPos + 1, yPos));
@@ -65,7 +85,22 @@ public class BoardItem : MonoBehaviour {
         emptySpace.Add(new Vector2(xPos, yPos + 1));
         emptySpace.Add(new Vector2(xPos, yPos - 1));
 
-        var characterSpaces = GetAdjacentBoardItems();
+        var characterSpaces = GetAdjacentBoardItems(includePlayer);
+        emptySpace = emptySpace.FindAll(e => {
+            return -1 == characterSpaces.FindIndex(c => e.x == c.xPos && e.y == c.yPos) && BoardManager.CheckValidCoord((int)e.x, (int)e.y);
+        });
+
+        return emptySpace;
+    }
+    public static List<Vector2> GetAdjacentEmptySpaces(int x, int y, bool includePlayer = true) {
+        List<Vector2> emptySpace = new List<Vector2>();
+
+        emptySpace.Add(new Vector2(x + 1, y));
+        emptySpace.Add(new Vector2(x - 1, y));
+        emptySpace.Add(new Vector2(x, y + 1));
+        emptySpace.Add(new Vector2(x, y - 1));
+
+        var characterSpaces = GetAdjacentBoardItems(x,y, includePlayer);
         emptySpace = emptySpace.FindAll(e => {
             return -1 == characterSpaces.FindIndex(c => e.x == c.xPos && e.y == c.yPos) && BoardManager.CheckValidCoord((int)e.x, (int)e.y);
         });

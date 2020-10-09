@@ -241,7 +241,7 @@ public class Character : BoardItem
         transform.position += new Vector3(shakeX, shakeY);
     }
 
-    public List<Vector2> GetAdjacentCoords(int x, int y) {
+    public static List<Vector2> GetAdjacentCoords(int x, int y) {
         List<Vector2> adjacentCoords = new List<Vector2>();
         if (BoardManager.CheckValidCoord(x + 1, y)) {
             adjacentCoords.Add(new Vector2(x + 1,y));
@@ -271,27 +271,25 @@ public class Character : BoardItem
 
         Stack<Vector2> coordStack = new Stack<Vector2>();
         List<Vector2> visitedCoords = new List<Vector2>();
-        GetAdjacentCoords(xPos,yPos).ForEach(x => {
-            coordStack.Push(x);
-            visitedCoords.Add(x);
+        GetAdjacentCoords(xPos,yPos).ForEach(c => {
+            if (walls.FindIndex(w => w.xPos == c.x && w.yPos == c.y) == -1) {
+                coordStack.Push(c);
+                visitedCoords.Add(c);
+            }
         });
         while (coordStack.Count > 0) {
             Vector2 currentCoord = coordStack.Pop();
-
-            //check if coord is a wall
-            if (walls.FindIndex(w => w.xPos == currentCoord.x && w.yPos == currentCoord.y) != -1) {
-                continue;
-            }
             
             var newCoords = GetAdjacentCoords((int)currentCoord.x, (int)currentCoord.y);
             newCoords.ForEach(n => {
-                if (visitedCoords.FindIndex(v => v.x == n.x && v.y == n.y) == -1) {
+                if (walls.FindIndex(w => w.xPos == n.x && w.yPos == n.y) == -1 && visitedCoords.FindIndex(v => v.x == n.x && v.y == n.y) == -1) {
                     visitedCoords.Add(n);
                     coordStack.Push(n);
                 }
             });
         }
-        if (allCoords.Count != visitedCoords.Count) return false;
+        if (allCoords.Count != visitedCoords.Count)
+            return false;
 
         return true;
     }

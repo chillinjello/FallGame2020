@@ -13,6 +13,9 @@ public class TurnManager : MonoBehaviour, IGameManager {
     GameObject startGameScreen;
     bool gameStarted = false;
 
+    [SerializeField]
+    bool debugMode = false;
+
     private enum Turn {
         playerTurn,
         enemyAttack,
@@ -35,6 +38,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
     public void Update() {
         if (HandleGameStart()) return;
         if (HandleGameOver()) return;
+        if (DebugMode()) return;
 
         if (Player == null) {
             Player = FindObjectOfType<Player>();
@@ -55,16 +59,6 @@ public class TurnManager : MonoBehaviour, IGameManager {
             PostEnemyMove();
             turn = Turn.playerTurn;
         }
-        /*
-        else if (!playerTurn && GettingPlayerInput()) {
-            Managers._enemy.EnemyTurn();
-            PostEnemyTurn();
-            playerTurn = true;
-            HandlePlayerInput();
-            PostPlayerTurn();
-            playerTurn = false;
-        }
-        */
     }
 
     private bool HandlePlayerInput() {
@@ -135,6 +129,9 @@ public class TurnManager : MonoBehaviour, IGameManager {
 
         Managers._enemy.StartGame();
         Managers._candy.StartGame();
+        Managers._player.StartGame();
+
+        SortCharacterLayers();
     }
 
     private void ClearGame() {
@@ -220,5 +217,19 @@ public class TurnManager : MonoBehaviour, IGameManager {
             characters[i].transform.position = new Vector3(position.x, position.y, z);
             z += zIncrement;
         }
+    }
+
+    private bool DebugMode() {
+        if (Input.GetKeyDown(KeyCode.R)) {
+            RestartGame();
+            return true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.E)) {
+            //Player.SeeIfCharacterCanReachAllSpaces();
+            return true;
+        }
+
+        return false;
     }
 }

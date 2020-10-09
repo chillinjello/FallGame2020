@@ -10,10 +10,15 @@ public class Player : Character
     [SerializeField]
     Vector2 StartingPos = new Vector2(2, 2);
 
+    [SerializeField]
+    int PLAYER_STARTING_HEALTH = 4;
+
     const int PLAYER_ATTACK = 1;
 
     protected override void Awake() {
         base.Awake();
+
+        currentHealth = PLAYER_STARTING_HEALTH;
 
         int startingX = Random.Range(2, 4);
         int startingY = Random.Range(2, 4);

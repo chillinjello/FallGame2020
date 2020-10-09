@@ -12,6 +12,26 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
         status = ManagerStatus.Started;
     }
 
+    [SerializeField]
+    TextMesh candyCounterText;
+    public int candyCount = 0;
+
+    public int totalScore = 0;
+
+    private void Update() {
+        candyCounterText.text = candyCount.ToString();
+    }
+
     public void PickUpCandy(CandyManager.CandyTypes type) {
+        candyCount++;
+    }
+
+    public void ClearPlayerStats() {
+        candyCount = 0;
+        totalScore = 0;
+    }
+
+    public void StartGame() {
+        ClearPlayerStats();
     }
 }

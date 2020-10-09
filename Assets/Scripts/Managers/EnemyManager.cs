@@ -84,21 +84,23 @@ public class EnemyManager : MonoBehaviour, IGameManager
                 newWall.SetWallPosition((int)outerWallPositions[i].x, (int)outerWallPositions[i].y);
                 Walls.Add(newWall);
             }
-        } while (Managers._turn.Player.SeeIfCharacterCanReachAllSpaces());
+        } while (!Managers._turn.Player.SeeIfCharacterCanReachAllSpaces());
 
 
         //create starting spawn point
         int x = 2;
         int y = 2;
-        while ((x == 2 && y == 2)
+        bool inWall = false;
+        while (((x == 2 && y == 2)
             || (x == 2 && y == 3)
             || (x == 3 && y == 2)
-            || (x == 3 && y == 3)) {
-            
+            || (x == 3 && y == 3)) || inWall) {
+            inWall = false;
+
             x = Random.Range(0, 6);
             y = Random.Range(0, 6);
             
-            if (Walls.FindIndex(w => w.xPos == x && w.yPos == y) != -1) continue;
+            if (Walls.FindIndex(w => w.xPos == x && w.yPos == y) != -1) inWall = true;
         }
 
         CreateNewSpawnPoint(x, y);
