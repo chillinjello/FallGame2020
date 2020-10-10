@@ -5,7 +5,7 @@ using UnityEngine;
 public class Character : BoardItem
 {
     [SerializeField]
-    SpriteRenderer sprite;
+    protected SpriteRenderer sprite;
     protected void FlipSprite(bool f) { sprite.flipX = f; }
     
 
@@ -109,7 +109,7 @@ public class Character : BoardItem
         }
     }
 
-    protected void SetPosition(int x, int y) {
+    protected virtual void SetPosition(int x, int y) {
         if (x > xPos) {
             FlipSprite(false);
         }

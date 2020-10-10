@@ -37,11 +37,11 @@ public class BoardItem : MonoBehaviour {
 
         return adjacentCharacters;
     }
-    protected List<BoardItem> GetAdjacentBoardItems(bool includePlayer = true) {
+    protected List<BoardItem> GetAdjacentBoardItems(bool includePlayer = true, bool includeWalls = true) {
         List<BoardItem> adjacentBoardItems = new List<BoardItem>();
         adjacentBoardItems.AddRange(Managers._enemy.Enemies);
         if (includePlayer) adjacentBoardItems.Add(Managers._turn.Player);
-        adjacentBoardItems.AddRange(Managers._enemy.Walls);
+        if (includeWalls) adjacentBoardItems.AddRange(Managers._enemy.Walls);
 
         adjacentBoardItems = adjacentBoardItems.FindAll(c => {
             if (c.xPos == xPos) {
@@ -77,7 +77,7 @@ public class BoardItem : MonoBehaviour {
 
         return adjacentBoardItems;
     }
-    protected List<Vector2> GetAdjacentEmptySpaces(bool includePlayer = true) {
+    protected List<Vector2> GetAdjacentEmptySpaces(bool includePlayer = true, bool includeWalls = true) {
         List<Vector2> emptySpace = new List<Vector2>();
 
         emptySpace.Add(new Vector2(xPos + 1, yPos));
@@ -85,7 +85,7 @@ public class BoardItem : MonoBehaviour {
         emptySpace.Add(new Vector2(xPos, yPos + 1));
         emptySpace.Add(new Vector2(xPos, yPos - 1));
 
-        var characterSpaces = GetAdjacentBoardItems(includePlayer);
+        var characterSpaces = GetAdjacentBoardItems(includePlayer, includeWalls);
         emptySpace = emptySpace.FindAll(e => {
             return -1 == characterSpaces.FindIndex(c => e.x == c.xPos && e.y == c.yPos) && BoardManager.CheckValidCoord((int)e.x, (int)e.y);
         });

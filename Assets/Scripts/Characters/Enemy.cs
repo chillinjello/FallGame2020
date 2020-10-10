@@ -15,15 +15,17 @@ public class Enemy : Character {
         stunned = true;
     }
 
-    public virtual void EnemyAttack() {
+    public virtual bool EnemyAttack() {
         if (stunned) {
-            return;
+            return false;
         }
         MoveDirections playerDirection = CheckIfPlayerIsInRange();
         if (playerDirection != MoveDirections.none) {
             AttackPlayer(playerDirection);
             attacked = true;
+            return true;
         }
+        return false;
     }
 
     public virtual void EnemyMove() {

@@ -3815,6 +3815,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1277553478, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82, type: 3}
+      propertyPath: VampirePrefab
+      value: 
+      objectReference: {fileID: 586295398096686924, guid: 31343007a55b35a40997f40aaca5274e,
+        type: 3}
     - target: {fileID: 333408748944862771, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
         type: 3}
       propertyPath: PlayerHealthText

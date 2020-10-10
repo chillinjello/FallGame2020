@@ -10,6 +10,8 @@ public class EnemyManager : MonoBehaviour, IGameManager
     [SerializeField]
     GameObject PlaceholderEnemyPrefab;
     [SerializeField]
+    GameObject VampirePrefab;
+    [SerializeField]
     GameObject SpawnPointPrefab;
     [SerializeField]
     GameObject WallPrefab;
@@ -129,7 +131,17 @@ public class EnemyManager : MonoBehaviour, IGameManager
     }
     
     public void SpawnEnemy(int x, int y) {
-        GameObject testEnemy = Instantiate(PlaceholderEnemyPrefab);
+        var enemyType = PlaceholderEnemyPrefab;
+        switch (Random.Range(0,2)) {
+            case 0:
+                enemyType = PlaceholderEnemyPrefab;
+                break;
+            case 1:
+                enemyType = VampirePrefab;
+                break;
+        }
+
+        GameObject testEnemy = Instantiate(enemyType);
         Enemies.Add(testEnemy.GetComponent<Enemy>());
         testEnemy.GetComponent<Enemy>().MoveCharacter(x, y);
     }
