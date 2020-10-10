@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Candy : BoardItem
 {
-    protected CandyManager.CandyTypes type = CandyManager.CandyTypes.PlaceholderCandy;
+    [SerializeField]
+    protected CandyManager.CandyTypes type = CandyManager.CandyTypes.TeleportCandy;
 
     public void SetPosition(int x, int y) {
         transform.position = BoardManager.GetCoords(x, y);

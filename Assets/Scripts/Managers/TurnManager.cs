@@ -17,9 +17,11 @@ public class TurnManager : MonoBehaviour, IGameManager {
     bool debugMode = false;
 
     private enum Turn {
+        tickBombs,
         playerTurn,
         enemyAttack,
-        enemyMove
+        enemyMove,
+        spawnEnemies
     }
     Turn turn = Turn.playerTurn;
 
@@ -45,7 +47,12 @@ public class TurnManager : MonoBehaviour, IGameManager {
             return;
         }
         
-        if (turn == Turn.playerTurn && !Managers._enemy.movingOrAttacking && HandlePlayerInput()) {
+        if (turn == Turn.tickBombs) {
+            Managers._candy.TickBombs();
+            PostBombTurn();
+            turn = Turn.playerTurn;
+        }
+        else if (turn == Turn.playerTurn && !Managers._enemy.movingOrAttacking && !Managers._candy.IsExploding() && HandlePlayerInput()) {
             PostPlayerTurn();
             turn = Turn.enemyAttack;
         }
@@ -57,7 +64,12 @@ public class TurnManager : MonoBehaviour, IGameManager {
         else if (turn == Turn.enemyMove && !Player.movingOrAttacking && !Managers._enemy.movingOrAttacking) {
             Managers._enemy.EnemyMove();
             PostEnemyMove();
-            turn = Turn.playerTurn;
+            turn = Turn.spawnEnemies;
+        }
+        else if (turn == Turn.spawnEnemies && !Player.movingOrAttacking && !Managers._enemy.movingOrAttacking) {
+            Managers._enemy.TickSpawnPoints();
+            PostEveryTurn();
+            turn = Turn.tickBombs;
         }
     }
 
@@ -76,7 +88,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
             direction = Character.MoveDirections.up;
         }
         else {
-            return false;
+            return Managers._player.UseCandy();
         }
 
         return Player.MoveCharacter(direction);
@@ -94,6 +106,19 @@ public class TurnManager : MonoBehaviour, IGameManager {
         }
     }
 
+    private void PostBombTurn() {
+        var Enemies = Managers._enemy.Enemies;
+        for (int i = Enemies.Count - 1; i >= 0; i--) {
+            var currentEnemy = Enemies[i];
+            if (!currentEnemy.isAlive()) {
+                Destroy(currentEnemy.gameObject);
+                Enemies.RemoveAt(i);
+            }
+        }
+
+        PostEveryTurn();
+    }
+
     private void PostPlayerTurn() {
         var Enemies = Managers._enemy.Enemies;
         for (int i = Enemies.Count - 1; i >= 0; i--) {
@@ -108,13 +133,10 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     private void PostEnemyAttack() {
-
         PostEveryTurn();
     }
 
     private void PostEnemyMove() {
-        Managers._enemy.TickSpawnPoints();
-
         PostEveryTurn();
     }
 
@@ -155,6 +177,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
             gameStarted = true;
             startGameScreen.SetActive(false);
             BeginGame();
+            PostEveryTurn();
         }
         
         if (gameStarted) return false;
@@ -187,35 +210,51 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     private void SortCharacterLayers() {
-        List<GameObject> characters = new List<GameObject>();
+        List<Wall> walls = Managers._enemy.Walls;
+        Player player = Player;
+        List<Enemy> enemies = Managers._enemy.Enemies;
+        List<SpawnPoint> spawns = Managers._enemy.SpawnPoints;
+        List<Candy> candies = Managers._candy.Candies;
+        int currentZ = 0;
+        float currentOffset = 0;
+        for (int y = 5; y >= 0; y--) {
+            for (int x = 0; x < 6; x++) {
+                currentOffset = 0;
+                //wall
+                var wall = walls.Find(w => w.yPos == y && w.xPos == x);
+                if (wall != null) {
+                    wall.gameObject.transform.position = new Vector3(wall.gameObject.transform.position.x, wall.gameObject.transform.position.y, currentZ + currentOffset);
+                }
+                currentOffset += 0.1f;
 
-        Managers._enemy.Enemies.ForEach(e => characters.Add(e.gameObject));
-        Managers._enemy.Walls.ForEach(w => characters.Add(w.gameObject));
-        characters.Add(Player.gameObject);
+                //player
+                if (player.xPos == x && player.yPos == y) {
+                    player.gameObject.transform.position = new Vector3(player.gameObject.transform.position.x, player.gameObject.transform.position.y, currentZ + currentOffset);
+                }
+                currentOffset += 0.1f;
 
-        characters.Sort((e1, e2) => {
-            if (e1.transform.position.y < e2.transform.position.y) {
-                return -1;
-            }
-            else if (e1.transform.position.y > e2.transform.position.y) {
-                return 1;
-            }
-            else {
-                if (e1.transform.position.x > e2.transform.position.x)
-                    return 1;
-                else if (e1.transform.position.x < e2.transform.position.x)
-                    return -1;
-                else
-                    return 0;
-            }
-        });
+                //enemy
+                var enemy = enemies.Find(e => e.yPos == y && e.xPos == x);
+                if (enemy != null) {
+                    enemy.gameObject.transform.position = new Vector3(enemy.gameObject.transform.position.x, enemy.gameObject.transform.position.y, currentZ + currentOffset);
+                }
+                currentOffset += 0.1f;
 
-        float z = 0;
-        float zIncrement = 0.1f;
-        for (int i = 0; i < characters.Count; i++) {
-            var position = characters[i].transform.position;
-            characters[i].transform.position = new Vector3(position.x, position.y, z);
-            z += zIncrement;
+                //spawn
+                var spawn = spawns.Find(s => s.yPos == y && s.xPos == x);
+                if (spawn != null) {
+                    spawn.gameObject.transform.position = new Vector3(spawn.gameObject.transform.position.x, spawn.gameObject.transform.position.y, currentZ + currentOffset);
+                }
+                currentOffset += 0.1f;
+
+                //candy
+                var candy = candies.Find(c => c.yPos == y && c.xPos == x);
+                if (candy != null) {
+                    candy.gameObject.transform.position = new Vector3(candy.gameObject.transform.position.x, candy.gameObject.transform.position.y, currentZ + currentOffset);
+                }
+
+                currentZ++;
+            }
         }
     }
 
@@ -226,7 +265,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
         }
 
         if (Input.GetKeyDown(KeyCode.E)) {
-            //Player.SeeIfCharacterCanReachAllSpaces();
+            Managers._player.PickUpCandy(CandyManager.CandyTypes.BombCandy);
             return true;
         }
 
