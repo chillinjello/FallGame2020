@@ -5,7 +5,7 @@ using UnityEngine;
 public class Candy : BoardItem
 {
     [SerializeField]
-    protected CandyManager.CandyTypes type = CandyManager.CandyTypes.TeleportCandy;
+    public CandyManager.CandyTypes type = CandyManager.CandyTypes.TeleportCandy;
 
     public void SetPosition(int x, int y) {
         transform.position = BoardManager.GetCoords(x, y);

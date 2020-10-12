@@ -98,11 +98,22 @@ MonoBehaviour:
   xPos: -1
   yPos: -1
   sprite: {fileID: 4502977139119682805}
-  moveSpeed: 0.4
+  moveSpeed: 0.2
   moving: 0
   attacking: 0
   currentHealth: 3
-  HealthSprites: []
+  HealthSprites:
+  - {fileID: 21300000, guid: 50f1998e03be3654eac968d12883e21d, type: 3}
+  - {fileID: 21300000, guid: 8ee334689e929bd498eb022390e3800a, type: 3}
+  - {fileID: 21300000, guid: 2f149825b56ab214885283c68c08530e, type: 3}
+  - {fileID: 21300000, guid: 115a56ca419c8b144a5e91e6739598f5, type: 3}
+  - {fileID: 21300000, guid: ba2eabf1353e92445b2f025ac3958ea9, type: 3}
+  - {fileID: 21300000, guid: 2ff68e97c9125b5449bd45f87f94d84d, type: 3}
+  - {fileID: 21300000, guid: af2f79f9e47576a4f9c2ed16f7c521d9, type: 3}
+  - {fileID: 21300000, guid: e593b7f5a5ba7a24d84acc28a98867c5, type: 3}
+  - {fileID: 21300000, guid: 2846c27494d82c34581b8b3c26f7af68, type: 3}
+  - {fileID: 21300000, guid: 99e8621b9c311dc45b40d2681f49865d, type: 3}
+  - {fileID: 21300000, guid: 9e377c432c8ff7b43ba640f281c7726b, type: 3}
   HealthSprite: {fileID: 3091037586971615809}
   attackDamage: 1
   VampireSprite: {fileID: 21300000, guid: 8d73b094a840e204e8d48b1cbef80241, type: 3}

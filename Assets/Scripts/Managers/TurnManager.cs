@@ -129,6 +129,8 @@ public class TurnManager : MonoBehaviour, IGameManager {
             }
         }
 
+        Player.TickVampire();
+
         PostEveryTurn();
     }
 
@@ -215,11 +217,25 @@ public class TurnManager : MonoBehaviour, IGameManager {
         List<Enemy> enemies = Managers._enemy.Enemies;
         List<SpawnPoint> spawns = Managers._enemy.SpawnPoints;
         List<Candy> candies = Managers._candy.Candies;
+        List<Bomb> bombs = Managers._candy.bombs;
+        List<Explosion> explosions = Managers._candy.explosions;
         int currentZ = 0;
         float currentOffset = 0;
         for (int y = 5; y >= 0; y--) {
             for (int x = 0; x < 6; x++) {
                 currentOffset = 0;
+                //explosions
+                var explosion = explosions.Find(e => e.yPos == y && e.xPos == x);
+                if (explosion != null) {
+                    explosion.gameObject.transform.position = new Vector3(explosion.gameObject.transform.position.x, explosion.gameObject.transform.position.y, currentZ + currentOffset);
+                }
+                currentOffset += 0.1f;
+                //bombs
+                var bomb = bombs.Find(b => b.yPos == y && b.xPos == x);
+                if (bomb != null) {
+                    bomb.gameObject.transform.position = new Vector3(bomb.gameObject.transform.position.x, bomb.gameObject.transform.position.y, currentZ + currentOffset);
+                }
+                currentOffset += 0.1f;
                 //wall
                 var wall = walls.Find(w => w.yPos == y && w.xPos == x);
                 if (wall != null) {
@@ -265,7 +281,14 @@ public class TurnManager : MonoBehaviour, IGameManager {
         }
 
         if (Input.GetKeyDown(KeyCode.E)) {
-            Managers._player.PickUpCandy(CandyManager.CandyTypes.BombCandy);
+            Managers._player.PickUpCandy(CandyManager.CandyTypes.CrossCandy);
+            Managers._player.PickUpCandy(CandyManager.CandyTypes.StunLips);
+            Managers._player.PickUpCandy(CandyManager.CandyTypes.DuplicateToosie);
+            Managers._player.PickUpCandy(CandyManager.CandyTypes.IncreasedAttackCandy);
+            Managers._player.PickUpCandy(CandyManager.CandyTypes.BatWings);
+            Managers._player.PickUpCandy(CandyManager.CandyTypes.VampireCandy);
+            Managers._player.PickUpCandy(CandyManager.CandyTypes.TeleportEnemiesCandy);
+            Managers._player.PickUpCandy(CandyManager.CandyTypes.TurnIntoCandy);
             return true;
         }
 

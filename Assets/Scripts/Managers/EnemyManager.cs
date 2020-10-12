@@ -12,6 +12,12 @@ public class EnemyManager : MonoBehaviour, IGameManager
     [SerializeField]
     GameObject VampirePrefab;
     [SerializeField]
+    GameObject ZombiePrefab;
+    [SerializeField]
+    GameObject FrankensteinPrefab;
+    [SerializeField]
+    GameObject WerewolfPrefab;
+    [SerializeField]
     GameObject SpawnPointPrefab;
     [SerializeField]
     GameObject WallPrefab;
@@ -132,12 +138,21 @@ public class EnemyManager : MonoBehaviour, IGameManager
     
     public void SpawnEnemy(int x, int y) {
         var enemyType = PlaceholderEnemyPrefab;
-        switch (Random.Range(0,2)) {
+        switch (Random.Range(0,5)) {
             case 0:
                 enemyType = PlaceholderEnemyPrefab;
                 break;
             case 1:
                 enemyType = VampirePrefab;
+                break;
+            case 2:
+                enemyType = ZombiePrefab;
+                break;
+            case 3:
+                enemyType = FrankensteinPrefab;
+                break;
+            case 4:
+                enemyType = WerewolfPrefab;
                 break;
         }
 

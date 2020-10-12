@@ -108,9 +108,9 @@ public class BoardItem : MonoBehaviour {
         return emptySpace;
     }
 
-    static public List<BoardItem> GetAllBoardItems(bool candies = true) {
+    static public List<BoardItem> GetAllBoardItems(bool candies = true, bool enemies = true) {
         List<BoardItem> boardItems = new List<BoardItem>();
-        boardItems.AddRange(Managers._enemy.Enemies);
+        if (enemies) boardItems.AddRange(Managers._enemy.Enemies);
         boardItems.Add(Managers._turn.Player);
         boardItems.AddRange(Managers._enemy.Walls);
         if (candies) boardItems.AddRange(Managers._candy.Candies);
@@ -118,7 +118,7 @@ public class BoardItem : MonoBehaviour {
         return boardItems;
     }
 
-    static public List<Vector2> FindEmptySpaces(bool candies = true) {
+    static public List<Vector2> FindEmptySpaces(bool candies = true, bool enemies = true) {
         List<Vector2> emptySpaces = new List<Vector2>();
         var boardItems = GetAllBoardItems(candies);
 

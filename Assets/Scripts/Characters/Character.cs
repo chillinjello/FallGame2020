@@ -11,19 +11,19 @@ public class Character : BoardItem
 
     //Moving
     [SerializeField]
-    float moveSpeed = 0.4f;
-    float moveTime = 0f;
+    protected float moveSpeed = 0.4f;
+    protected float moveTime = 0f;
     public bool moving = false;
     //Attacking
-    float attackSpeed = 0.2f;
+    protected float attackSpeed = 0.2f;
     float attackSizeMultiplier = 0.2f;
-    float attackTime = 0f;
+    protected float attackTime = 0f;
     public bool attacking = false;
     //Both moving and attacking
     public bool movingOrAttacking { get { return moving || attacking; } }
-    Vector3 startPosition = Vector3.zero;
-    Vector3 movePosition = Vector3.zero;
-    public void SnapMovement() {
+    protected Vector3 startPosition = Vector3.zero;
+    protected Vector3 movePosition = Vector3.zero;
+    public virtual void SnapMovement() {
         if (!moving && !attacking) return;
         moving = false;
         attacking = false;
@@ -66,7 +66,7 @@ public class Character : BoardItem
         SetHealthSprite();
     }
 
-    private void MoveCharacter() {
+    protected virtual void MoveCharacter() {
         if (movingOrAttacking) {
             float speed;
             float time;

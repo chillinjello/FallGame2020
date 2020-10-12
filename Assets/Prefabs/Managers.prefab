@@ -52,6 +52,7 @@ MonoBehaviour:
     type: 3}
   Player: {fileID: 0}
   startGameScreen: {fileID: 0}
+  debugMode: 0
   gameOverScreen: {fileID: 0}
 --- !u!114 &2406517245879260737
 MonoBehaviour:
@@ -91,6 +92,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlaceholderEnemyPrefab: {fileID: 6888392007405651072, guid: c62937d0fd5d2d74eb0df196297904b0,
     type: 3}
+  VampirePrefab: {fileID: 586295398096686924, guid: 31343007a55b35a40997f40aaca5274e,
+    type: 3}
+  ZombiePrefab: {fileID: 908562827881702687, guid: a924953741f1e3f4fa2f8668fb028c7f,
+    type: 3}
   SpawnPointPrefab: {fileID: 8688337758375777259, guid: fa36f8047552ac44089e925b298cef64,
     type: 3}
   WallPrefab: {fileID: 2627203196317140223, guid: 4c07b5aff59a77e429fed7b0f5ad93c0,
@@ -112,7 +117,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4988c6b6cafb5fb45a0654388776b16f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerHealthText: {fileID: 0}
+  totalCandyCounterNumber: {fileID: 0}
+  totalCandyCount: 0
+  totalScore: 0
+  teleportCandyNumber: {fileID: 0}
+  bombCandyNumber: {fileID: 0}
+  crossCandyNumber: {fileID: 0}
+  stunLipsNumber: {fileID: 0}
+  duplicateTootsieNumber: {fileID: 0}
+  increaseAttackCandyNumber: {fileID: 0}
+  batWingsNumber: {fileID: 0}
+  vampireCandyNumber: {fileID: 0}
+  teleportEnemiesCandyNumber: {fileID: 0}
+  turnIntoCandyNumber: {fileID: 0}
 --- !u!114 &2636962062267928369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,6 +142,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad7b929a7de96848ac851a9550bf344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlaceholderCandyPrefab: {fileID: 6252580824112801921, guid: f133e50d918665341b64bf8278f505cd,
+  TeleportCandyPrefab: {fileID: 6252580824112801921, guid: f133e50d918665341b64bf8278f505cd,
+    type: 3}
+  BombCandyPrefab: {fileID: 3275986691651329296, guid: c934e2d23936b4046bc5ed31fabc1854,
+    type: 3}
+  CrossCandyPrefab: {fileID: 8205150074254789568, guid: ed211e6d91b7b8c4cb64dd888d7f0e0d,
+    type: 3}
+  StunLipsPrefab: {fileID: 7102468547654381320, guid: 6f7e76e5e924bf546b06ee07d6349be3,
+    type: 3}
+  DuplicateTootsiePrefab: {fileID: 5052947699066189236, guid: e9b3b9f803dfd2448989a0130120c4e6,
+    type: 3}
+  IncreasedAttackCandyPrefab: {fileID: 2438381718418379214, guid: 08f4caf0d4568514da095ac13e3820b9,
+    type: 3}
+  BatWingsPrefab: {fileID: 1363993468717994784, guid: 56339ac6637da3e44b345d5ac4c4456b,
+    type: 3}
+  VampireCandyPrefab: {fileID: 2242172852835265581, guid: bf4f381d12888c449b0f5b908e7c894e,
+    type: 3}
+  TeleportEnemiesCandyPrefab: {fileID: 3083165268911233354, guid: 7c2947ccacc528c4bb82a4a217f4ced4,
+    type: 3}
+  TurnIntoCandyPrefab: {fileID: 7961611838790540987, guid: d2788c37d5749ed4981da8e3e5ef546d,
     type: 3}
   Candies: []
+  BombPrefab: {fileID: 3202044411145333772, guid: c5e02f13d0a42844f8add0fcc6f51bf4,
+    type: 3}
+  bombs: []
+  explosions: []
+  crossExplosion: {fileID: 9197344860863552357, guid: a58754fa817835d479f0c0f66d699646,
+    type: 3}

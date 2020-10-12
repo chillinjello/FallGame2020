@@ -4,19 +4,24 @@ using UnityEngine;
 
 public class Enemy : Character {
     [SerializeField]
-    int attackDamage = BASE_ATTACK_DAMAGE;
+    protected int attackDamage = BASE_ATTACK_DAMAGE;
     const int BASE_ATTACK_DAMAGE = 1;
 
-    bool stunned = false;
-    bool attacked = false;
+    protected int lipStunned = 0;
+    protected bool stunned = false;
+    protected bool attacked = false;
 
     public override void Attack(int amount) {
         base.Attack(amount);
         stunned = true;
     }
 
+    public void StunLips() {
+        lipStunned = 5;
+    }
+
     public virtual bool EnemyAttack() {
-        if (stunned) {
+        if (stunned || lipStunned > 0) {
             return false;
         }
         MoveDirections playerDirection = CheckIfPlayerIsInRange();
@@ -29,9 +34,10 @@ public class Enemy : Character {
     }
 
     public virtual void EnemyMove() {
-        if (stunned || attacked) {
+        if (stunned || attacked || lipStunned > 0) {
             stunned = false;
             attacked = false;
+            lipStunned = Mathf.Max(0, lipStunned - 1);
             return;
         }
 

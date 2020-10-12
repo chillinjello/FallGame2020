@@ -17,16 +17,18 @@ public class Vampire : Enemy
 
         if (Managers._enemy.Walls.FindIndex(w => w.xPos == x && w.yPos == y) != -1) {
             sprite.sprite = BatSprite;
+            sprite.sortingOrder = 1;
             isBat = true;
         }
         else {
             sprite.sprite = VampireSprite;
+            sprite.sortingOrder = 0;
             isBat = false;
         }
     }
 
     public override bool EnemyAttack() {
-        if (!isBat && base.EnemyAttack()) {
+        if (base.EnemyAttack()) {
             currentHealth++;
             return true;
         }

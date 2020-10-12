@@ -95,12 +95,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed955295bdad4ee428c2b2d347ca5481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
   xPos: -1
   yPos: -1
+  sprite: {fileID: 0}
   moveSpeed: 0.2
   moving: 0
-  attackSpeed: 0.1
   attacking: 0
   currentHealth: 3
   HealthSprites:
@@ -116,8 +115,27 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2bf4906666b8ff845b3e230ed9206b99, type: 3}
   - {fileID: 21300000, guid: babe63ba2fdb019418c83460482ee2d6, type: 3}
   HealthSprite: {fileID: 252449619305438691}
+  batSprite: {fileID: 21300000, guid: cd873a9fb83d9314ca768015a8d69437, type: 3}
+  startingSprite: {fileID: 21300000, guid: c433ce3d294108f459e45acdb637ff4d, type: 3}
+  lipsSprite: {fileID: 21300000, guid: 380de614cd116054082a8fe956bc309c, type: 3}
+  lipsFangSprite: {fileID: 21300000, guid: 292bc748a7d9e2e42a4f4d550e2e6632, type: 3}
+  lipsWingSprite: {fileID: 21300000, guid: 2502ef3ab7e53e64282959447762432a, type: 3}
+  lipsPopSprite: {fileID: 21300000, guid: 846c1a86a9b608348b4647ed5a82fd95, type: 3}
+  lipsFangWingSprite: {fileID: 21300000, guid: 297baf10a04f9fc4eb4832e37cac7bcd, type: 3}
+  lipsFangPopSprite: {fileID: 21300000, guid: aec93d9d39b57fe4e976e5a609343670, type: 3}
+  lipsFangWingPopSprite: {fileID: 21300000, guid: dcf482ac966081e4b985683be725ef23,
+    type: 3}
+  lipsWingPopSprite: {fileID: 21300000, guid: ea5bb89bbd95d9340bdc165f0d5a3e6b, type: 3}
+  fangSprite: {fileID: 21300000, guid: 8ab154f9bedfe8a4a8b8283b775fcbd3, type: 3}
+  fangWingSprite: {fileID: 21300000, guid: 5d34dee67a02bf94e950ebaf009505cc, type: 3}
+  fangPopSprite: {fileID: 21300000, guid: 760f080b74c37134bb267083bc34efaa, type: 3}
+  fangWingPopSprite: {fileID: 21300000, guid: fac2222ba594bc745b27bb49d1cfaa6d, type: 3}
+  wingSprite: {fileID: 21300000, guid: 66d035873bb09e949b6185f925ff7a3d, type: 3}
+  wingPopSprite: {fileID: 21300000, guid: 488e96de39c82574889f430f331ce4aa, type: 3}
+  popSprite: {fileID: 21300000, guid: dc9f0404de230e542b13b0257422536d, type: 3}
   invincible: 0
   StartingPos: {x: 2, y: 2}
+  PLAYER_STARTING_HEALTH: 4
 --- !u!1001 &1184508530380819045
 PrefabInstance:
   m_ObjectHideFlags: 0

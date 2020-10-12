@@ -5,6 +5,42 @@ using UnityEngine;
 public class Player : Character
 {
     [SerializeField]
+    Sprite batSprite;
+    [SerializeField]
+    Sprite startingSprite;
+    [SerializeField]
+    Sprite lipsSprite;
+    [SerializeField]
+    Sprite lipsFangSprite;
+    [SerializeField]
+    Sprite lipsWingSprite;
+    [SerializeField]
+    Sprite lipsPopSprite;
+    [SerializeField]
+    Sprite lipsFangWingSprite;
+    [SerializeField]
+    Sprite lipsFangPopSprite;
+    [SerializeField]
+    Sprite lipsFangWingPopSprite;
+    [SerializeField]
+    Sprite lipsWingPopSprite;
+    [SerializeField]
+    Sprite fangSprite;
+    [SerializeField]
+    Sprite fangWingSprite;
+    [SerializeField]
+    Sprite fangPopSprite;
+    [SerializeField]
+    Sprite fangWingPopSprite;
+    [SerializeField]
+    Sprite wingSprite;
+    [SerializeField]
+    Sprite wingPopSprite;
+    [SerializeField]
+    Sprite popSprite;
+
+
+    [SerializeField]
     bool invincible = false;
 
     [SerializeField]
@@ -14,6 +50,33 @@ public class Player : Character
     int PLAYER_STARTING_HEALTH = 4;
 
     const int PLAYER_ATTACK = 1;
+
+    private int stunLips = 0;
+    public void AddStunLips () {
+        stunLips++;
+        SetPlayerSprite();
+    }
+    private int increasedAttack = 0;
+    public void AddIncreasedAttack () {
+        increasedAttack++;
+        SetPlayerSprite();
+    }
+    private int batWings = 0;
+    private bool batWingsOn = false;
+    public void AddBatWings() {
+        batWings++;
+        SetPlayerSprite();
+    }
+    private int vampire = 0;
+    const int VAMPIRE_AMOUNT = 4;
+    public void AddVampire() {
+        vampire += VAMPIRE_AMOUNT;
+        SetPlayerSprite();
+    }
+    public void TickVampire() {
+        vampire = Mathf.Max(0,vampire-1);
+        SetPlayerSprite();
+    }
 
     protected override void Awake() {
         base.Awake();
@@ -67,16 +130,39 @@ public class Player : Character
         BoardItem collision = collidableObjects.Find(e => e.xPos == newX && e.yPos == newY);
         if (collision != null) {
             Enemy enemy = collision.gameObject.GetComponent<Enemy>();
+            Wall wall = collision.gameObject.GetComponent<Wall>();
             if (enemy != null) {
-                enemy.Attack(PLAYER_ATTACK);
+                if (increasedAttack > 0) {
+                    enemy.Attack(int.MaxValue);
+                    increasedAttack--;
+                    SetPlayerSprite();
+                }
+                else {
+                    enemy.Attack(PLAYER_ATTACK);
+                }
+                if (stunLips > 0) {
+                    enemy.StunLips();
+                    stunLips--;
+                    SetPlayerSprite();
+                }
+                if (vampire > 0) {
+                    currentHealth++;
+                }
+                AttackAnimation(direction);
+                SnapMovement();
+                return true;
             }
-            else {
-                return false;
+            else if (wall != null) {
+                if (batWingsOn || batWings > 0) {
+                    batWingsOn = true;
+                    SetPlayerSprite();
+                    SnapMovement();
+                    SetPosition(newX, newY);
+                    SetMoveSprite(newX, newY);
+                    return true;
+                }
             }
-
-            AttackAnimation(direction);
-            SnapMovement();
-            return true;
+            return false;
         }
         else {
             //check if you moved onto candy
@@ -85,10 +171,108 @@ public class Player : Character
                 candy.PickUpCandy();
             }
 
+            if (batWingsOn) {
+                batWingsOn = false;
+                batWings--;
+                SetPlayerSprite();
+            }
             SnapMovement();
             SetPosition(newX, newY);
             SetMoveSprite(newX, newY);
             return true;
         }
+    }
+
+    private void SetPlayerSprite() {
+        sprite.sortingOrder = 0;
+        if (batWingsOn) {
+            sprite.sprite = batSprite;
+            sprite.sortingOrder = 1;
+        }
+
+        else if (stunLips > 0) {
+            if (vampire > 0) {
+                if (batWings > 0) {
+                    if (increasedAttack > 0) {
+                        sprite.sprite = lipsFangWingPopSprite;
+                    }
+                    else {
+                        sprite.sprite = lipsFangWingSprite;
+                    }
+                }
+                else {
+                    if (increasedAttack > 0) {
+                        sprite.sprite = lipsFangPopSprite;
+                    }
+                    else {
+                        sprite.sprite = lipsFangSprite;
+                    }
+                }
+            }
+            else {
+                if (batWings > 0) {
+                    if (increasedAttack > 0) {
+                        sprite.sprite = lipsWingPopSprite;
+                    }
+                    else {
+                        sprite.sprite = lipsWingSprite;
+                    }
+                }
+                else {
+                    if (increasedAttack > 0) {
+                        sprite.sprite = lipsPopSprite;
+                    }
+                    else {
+                        sprite.sprite = lipsSprite;
+                    }
+                }
+            }
+        }
+        else {
+            if (vampire > 0) {
+                if (batWings > 0) {
+                    if (increasedAttack > 0) {
+                        sprite.sprite = fangWingPopSprite;
+                    }
+                    else {
+                        sprite.sprite = fangWingSprite;
+                    }
+                }
+                else {
+                    if (increasedAttack > 0) {
+                        sprite.sprite = fangPopSprite;
+                    }
+                    else {
+                        sprite.sprite = fangSprite;
+                    }
+                }
+            }
+            else {
+                if (batWings > 0) {
+                    if (increasedAttack > 0) {
+                        sprite.sprite = wingPopSprite;
+                    }
+                    else {
+                        sprite.sprite = wingSprite;
+                    }
+                }
+                else {
+                    if (increasedAttack > 0) {
+                        sprite.sprite = popSprite;
+                    }
+                    else {
+                        sprite.sprite = startingSprite;
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+        
     }
 }
