@@ -17,6 +17,40 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
     Number totalCandyCounterNumber;
     public int totalCandyCount = 0;
 
+    [SerializeField]
+    Number addedScoreNumber;
+    [SerializeField]
+    GameObject addedScoreParentObject;
+    [SerializeField]
+    List<SpriteRenderer> scoreSprites;
+    public int lastAddedScore = 0;
+    private const float TIME_LAST_SCORE_VISIBLE = 1f;
+    private const float FADE_TIME = 0.5f;
+    private float scoreTime = float.PositiveInfinity;
+
+    private void Awake() {
+        addedScoreParentObject.SetActive(false);
+        SetScore();
+        SetCandyCount();
+    }
+    private void Update() {
+        if (scoreTime < FADE_TIME + TIME_LAST_SCORE_VISIBLE) {
+            scoreTime += Time.deltaTime;
+            addedScoreParentObject.SetActive(true);
+            if (scoreTime < TIME_LAST_SCORE_VISIBLE) {
+                scoreSprites.ForEach(s => s.color = new Color32(0, 255, 0, 255));
+            }
+            else {
+                scoreSprites.ForEach(s => s.color = new Color32(0, 255, 0, (byte)(255 - (int)(255 * (scoreTime - TIME_LAST_SCORE_VISIBLE) / FADE_TIME))));
+            }
+        }
+        else {
+            addedScoreParentObject.SetActive(false);
+        }
+    }
+
+    [SerializeField]
+    Number scoreNumber;
     public int totalScore = 0;
     
     //candy counter sprites
@@ -51,8 +85,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
     Number turnIntoCandyNumber;
     private int turnIntoCandyCount = 0;
 
-
-
+    
     public bool UseCandy() {
         if (Input.GetKeyDown(KeyCode.Alpha1)) {
             if (teleportCandyCount <= 0) return false;
@@ -148,7 +181,6 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
     }
 
     public void PickUpCandy(CandyManager.CandyTypes type) {
-
         switch (type) {
             case CandyManager.CandyTypes.TeleportCandy:
                 teleportCandyCount++;
@@ -182,7 +214,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
                 break;
         }
 
-
+        AddScore(PICKUP_CANDY_SCORE);
         totalCandyCount++;
         SetCandyCount();
     }
@@ -224,6 +256,24 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
         return candyTypes;
     }
 
+    public const int PICKUP_CANDY_SCORE = 100;
+    public const int KILL_ENEMY_SCORE = 100;
+    public const int FINISH_GAME_SCORE = 5000;
+    public const int LOLLYPOP_KILL_SCORE = 250;
+    public const int TURN_INTO_CANDY_SCORE = 500;
+    public const int KILL_WITH_COTTON_SCORE = 0;
+    public const int BOMB_KILL_SCORE = 100;
+    public void AddScore(int score) {
+        totalScore += score;
+        lastAddedScore = score;
+        scoreTime = 0;
+        SetScore();
+    }
+
+    private void SetScore() {
+        scoreNumber.SetNumber(totalScore);
+        addedScoreNumber.SetNumber(lastAddedScore);
+    }
     private void SetCandyCount() {
         totalCandyCounterNumber.SetNumber(totalCandyCount);
         teleportCandyNumber.SetNumber(teleportCandyCount);
@@ -238,7 +288,11 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
         turnIntoCandyNumber.SetNumber(turnIntoCandyCount);
     }
 
+
+
     public void ClearPlayerStats() {
+        totalScore = 0;
+        lastAddedScore = 0;
         totalCandyCount = 0;
         teleportCandyCount = 0;
         bombCandyCount = 0;
@@ -255,6 +309,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
 
     public void StartGame() {
         ClearPlayerStats();
+        SetScore();
         SetCandyCount();
     }
 }

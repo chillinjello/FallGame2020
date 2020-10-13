@@ -48,11 +48,15 @@ public class Bomb : BoardItem
         Explosion explosion = Instantiate(explosionPrefab).GetComponent<Explosion>();
         explosion.SetPosition(xPos, yPos);
         explosions.Add(explosion);
+        int numberKilled = 0;
         characters.ForEach(c => {
             if (c.xPos == xPos && yPos == c.yPos) {
-                c.Attack(3);
+                if (c.Attack(3)) {
+                    numberKilled++;
+                }
             }
         });
+        Managers._player.AddScore(PlayerStatusManager.BOMB_KILL_SCORE * numberKilled * numberKilled);
 
         if (BoardManager.CheckValidCoord(xPos + 1,yPos)) {
             characters.ForEach(c => {

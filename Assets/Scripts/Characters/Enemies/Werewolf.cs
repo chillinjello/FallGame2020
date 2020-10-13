@@ -7,17 +7,18 @@ public class Werewolf : Enemy
     bool justAttacked = false;
     bool movingFirstTime = false;
 
-    public override void Attack(int amount) {
+    public override bool Attack(int amount) {
         if (justAttacked == false) {
-            base.Attack(int.MaxValue);
+            return base.Attack(int.MaxValue);
         }
         else {
-            base.Attack(amount);
             stunned = true;
+            return base.Attack(amount);
         }
     }
 
     public override bool EnemyAttack() {
+        attacked = false;
         if (base.EnemyAttack()) {
             justAttacked = true;
             return true;

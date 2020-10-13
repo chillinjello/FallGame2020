@@ -34,19 +34,25 @@ public class Character : BoardItem
 
     //Character shake
     const int DEFAULT_SHAKE_AMOUNT = 7;
+    const int DEAD_SHAKE_AMOUNT = 14;
     const float SHAKE_MULTIPLIER = 0.01f;
+    const float DEAD_SHAKE_MULTIPLIER = 0.015f;
     const float TIME_BETWEEN_SHAKES = 0.03f;
     float shakeTime = TIME_BETWEEN_SHAKES;
     int shakeAmount;
+    public bool shaking { get { return shakeAmount > 0; } }
 
     //Health
     [SerializeField]
     const int STARTING_HEALTH = 3;
     public int currentHealth = STARTING_HEALTH;
     public bool isAlive() { return currentHealth > 0; }
-    public virtual void Attack(int amount) {
+    public virtual bool Attack(int amount) {
         currentHealth -= amount;
-        CharacterShake();
+        CharacterShake(currentHealth <= 0);
+        if (currentHealth <= 0)
+            return true;
+        return false;
     }
     //Health Sprites
     [SerializeField]
@@ -60,7 +66,7 @@ public class Character : BoardItem
         sprite = GetComponent<SpriteRenderer>();
     }
 
-    private void Update() {
+    protected virtual void Update() {
         MoveCharacter();
         ShakeCharacter();
         SetHealthSprite();
@@ -206,8 +212,13 @@ public class Character : BoardItem
         return true;
     }
 
-    public virtual void CharacterShake() {
-        shakeAmount = DEFAULT_SHAKE_AMOUNT;
+    public virtual void CharacterShake(bool dead = false) {
+        if (dead) {
+            shakeAmount = DEAD_SHAKE_AMOUNT;
+        }
+        else {
+            shakeAmount = DEFAULT_SHAKE_AMOUNT;
+        }
     }
     
     protected virtual void ShakeCharacter() {
@@ -232,8 +243,8 @@ public class Character : BoardItem
         shakeAmount--;
 
         float shakeAngle = Random.Range(0f, 1f) * Mathf.PI * 2;
-        float shakeX = BoardManager.FixToPixel((Mathf.Cos(shakeAngle) * shakeAmount) * SHAKE_MULTIPLIER);
-        float shakeY = BoardManager.FixToPixel((Mathf.Sin(shakeAngle) * shakeAmount) * SHAKE_MULTIPLIER);
+        float shakeX = BoardManager.FixToPixel((Mathf.Cos(shakeAngle) * shakeAmount) * (currentHealth <= 0 ? DEAD_SHAKE_MULTIPLIER: SHAKE_MULTIPLIER));
+        float shakeY = BoardManager.FixToPixel((Mathf.Sin(shakeAngle) * shakeAmount) * (currentHealth <= 0 ? DEAD_SHAKE_MULTIPLIER : SHAKE_MULTIPLIER));
 
         if (!movingOrAttacking) {
             SetSprite(xPos, yPos);

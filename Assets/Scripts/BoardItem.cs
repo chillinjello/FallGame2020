@@ -57,11 +57,11 @@ public class BoardItem : MonoBehaviour {
 
         return adjacentBoardItems;
     }
-    public static List<BoardItem> GetAdjacentBoardItems(int x, int y, bool includePlayer = true) {
+    public static List<BoardItem> GetAdjacentBoardItems(int x, int y, bool includePlayer = true, bool includeWalls = true) {
         List<BoardItem> adjacentBoardItems = new List<BoardItem>();
         adjacentBoardItems.AddRange(Managers._enemy.Enemies);
         if (includePlayer) adjacentBoardItems.Add(Managers._turn.Player);
-        adjacentBoardItems.AddRange(Managers._enemy.Walls);
+        if (includeWalls) adjacentBoardItems.AddRange(Managers._enemy.Walls);
 
         adjacentBoardItems = adjacentBoardItems.FindAll(c => {
             if (c.xPos == x) {
@@ -92,7 +92,7 @@ public class BoardItem : MonoBehaviour {
 
         return emptySpace;
     }
-    public static List<Vector2> GetAdjacentEmptySpaces(int x, int y, bool includePlayer = true) {
+    public static List<Vector2> GetAdjacentEmptySpaces(int x, int y, bool includePlayer = true, bool includeWalls = true) {
         List<Vector2> emptySpace = new List<Vector2>();
 
         emptySpace.Add(new Vector2(x + 1, y));
@@ -100,7 +100,7 @@ public class BoardItem : MonoBehaviour {
         emptySpace.Add(new Vector2(x, y + 1));
         emptySpace.Add(new Vector2(x, y - 1));
 
-        var characterSpaces = GetAdjacentBoardItems(x,y, includePlayer);
+        var characterSpaces = GetAdjacentBoardItems(x,y, includePlayer, includeWalls);
         emptySpace = emptySpace.FindAll(e => {
             return -1 == characterSpaces.FindIndex(c => e.x == c.xPos && e.y == c.yPos) && BoardManager.CheckValidCoord((int)e.x, (int)e.y);
         });
@@ -108,19 +108,19 @@ public class BoardItem : MonoBehaviour {
         return emptySpace;
     }
 
-    static public List<BoardItem> GetAllBoardItems(bool candies = true, bool enemies = true) {
+    static public List<BoardItem> GetAllBoardItems(bool candies = true, bool enemies = true, bool walls = true) {
         List<BoardItem> boardItems = new List<BoardItem>();
         if (enemies) boardItems.AddRange(Managers._enemy.Enemies);
         boardItems.Add(Managers._turn.Player);
-        boardItems.AddRange(Managers._enemy.Walls);
+        if (walls) boardItems.AddRange(Managers._enemy.Walls);
         if (candies) boardItems.AddRange(Managers._candy.Candies);
 
         return boardItems;
     }
 
-    static public List<Vector2> FindEmptySpaces(bool candies = true, bool enemies = true) {
+    static public List<Vector2> FindEmptySpaces(bool candies = true, bool enemies = true, bool walls = true) {
         List<Vector2> emptySpaces = new List<Vector2>();
-        var boardItems = GetAllBoardItems(candies);
+        var boardItems = GetAllBoardItems(candies, enemies, walls);
 
         for (int x = 0; x < 6; x++) {
             for (int y = 0; y < 6; y++) {

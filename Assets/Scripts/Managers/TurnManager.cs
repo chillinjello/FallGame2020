@@ -29,6 +29,15 @@ public class TurnManager : MonoBehaviour, IGameManager {
     GameObject gameOverScreen;
     bool gameOver = false;
 
+    [SerializeField]
+    GameObject gameWonScreen;
+    bool gameWon = false;
+
+    [SerializeField]
+    Number gameEndScoreNumber;
+    [SerializeField]
+    GameObject gameEndScoreParent;
+
     public void Startup() {
         status = ManagerStatus.Initializing;
         Debug.Log("Started Turn Manager...");
@@ -40,6 +49,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
     public void Update() {
         if (HandleGameStart()) return;
         if (HandleGameOver()) return;
+        if (HandleWin()) return;
         if (DebugMode()) return;
 
         if (Player == null) {
@@ -52,21 +62,21 @@ public class TurnManager : MonoBehaviour, IGameManager {
             PostBombTurn();
             turn = Turn.playerTurn;
         }
-        else if (turn == Turn.playerTurn && !Managers._enemy.movingOrAttacking && !Managers._candy.IsExploding() && HandlePlayerInput()) {
+        else if (turn == Turn.playerTurn && !Managers._enemy.movingAttackingOrShaking && !Managers._candy.IsExploding() && HandlePlayerInput()) {
             PostPlayerTurn();
             turn = Turn.enemyAttack;
         }
-        else if (turn == Turn.enemyAttack && !Player.movingOrAttacking && !Managers._enemy.movingOrAttacking) {
+        else if (turn == Turn.enemyAttack && !Player.movingOrAttacking && !Managers._enemy.movingAttackingOrShaking) {
             Managers._enemy.EnemyAttack();
             PostEnemyAttack();
             turn = Turn.enemyMove;
         }
-        else if (turn == Turn.enemyMove && !Player.movingOrAttacking && !Managers._enemy.movingOrAttacking) {
+        else if (turn == Turn.enemyMove && !Player.movingOrAttacking && !Managers._enemy.movingAttackingOrShaking) {
             Managers._enemy.EnemyMove();
             PostEnemyMove();
             turn = Turn.spawnEnemies;
         }
-        else if (turn == Turn.spawnEnemies && !Player.movingOrAttacking && !Managers._enemy.movingOrAttacking) {
+        else if (turn == Turn.spawnEnemies && !Player.movingOrAttacking && !Managers._enemy.movingAttackingOrShaking) {
             Managers._enemy.TickSpawnPoints();
             PostEveryTurn();
             turn = Turn.tickBombs;
@@ -107,27 +117,11 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     private void PostBombTurn() {
-        var Enemies = Managers._enemy.Enemies;
-        for (int i = Enemies.Count - 1; i >= 0; i--) {
-            var currentEnemy = Enemies[i];
-            if (!currentEnemy.isAlive()) {
-                Destroy(currentEnemy.gameObject);
-                Enemies.RemoveAt(i);
-            }
-        }
 
         PostEveryTurn();
     }
 
     private void PostPlayerTurn() {
-        var Enemies = Managers._enemy.Enemies;
-        for (int i = Enemies.Count - 1; i >= 0; i--) {
-            var currentEnemy = Enemies[i];
-            if (!currentEnemy.isAlive()) {
-                Destroy(currentEnemy.gameObject);
-                Enemies.RemoveAt(i);
-            }
-        }
 
         Player.TickVampire();
 
@@ -192,6 +186,15 @@ public class TurnManager : MonoBehaviour, IGameManager {
         if (!Player.isAlive()) {
             gameOver = true;
             gameOverScreen.SetActive(true);
+            gameEndScoreNumber.SetNumber(Managers._player.totalScore);
+            gameEndScoreParent.SetActive(true);
+        }
+        else if (Managers._player.totalCandyCount >= 2) {
+            gameWon = true;
+            gameWonScreen.SetActive(true);
+            Managers._player.AddScore(PlayerStatusManager.FINISH_GAME_SCORE);
+            gameEndScoreNumber.SetNumber(Managers._player.totalScore);
+            gameEndScoreParent.SetActive(true);
         }
     }
 
@@ -201,13 +204,35 @@ public class TurnManager : MonoBehaviour, IGameManager {
         if (Input.GetKeyDown(KeyCode.Space)) {
             gameStarted = true;
             gameOver = false;
+            gameWon = false;
             gameOverScreen.SetActive(false);
+            gameEndScoreNumber.SetNumber(0);
+            gameEndScoreParent.SetActive(false);
             RestartGame();
         }
 
         if (!gameOver) return false;
 
         gameOverScreen.SetActive(true);
+        return true;
+    }
+
+    private bool HandleWin() {
+        if (!gameWon) return false;
+
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            gameStarted = true;
+            gameOver = false;
+            gameWon = false;
+            gameWonScreen.SetActive(false);
+            gameEndScoreNumber.SetNumber(0);
+            gameEndScoreParent.SetActive(false);
+            RestartGame();
+        }
+
+        if (!gameWon) return false;
+
+        gameWonScreen.SetActive(true);
         return true;
     }
 

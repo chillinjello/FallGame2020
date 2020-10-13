@@ -36,6 +36,46 @@ public class Vampire : Enemy
     }
 
     protected override void MoveEnemy() {
+        SmartMovement();
+    }
+
+    protected override void SmartMovement() {
+        List<Vector2> emptySpaces = FindEmptySpaces(false, false, false);
+        Player player = Managers._turn.Player;
+        Vector2 playerCoord = player.GetPos();
+
+        List<Vector2> openSet = new List<Vector2>();
+        openSet.Add(GetPos());
+
+        List<(Vector2, Vector2)> cameFrom = new List<(Vector2, Vector2)>();
+
+        List<Vector2> visited = new List<Vector2>();
+
+        while (openSet.Count > 0) {
+            openSet.Sort((s1, s2) => player.ManhattanDistance((int)s1.x, (int)s1.y) - player.ManhattanDistance((int)s2.x, (int)s2.y));
+
+            var currentCoord = openSet[0];
+            if (currentCoord == playerCoord) {
+                //reconstruct path
+                var lastCoord = cameFrom.Find(c => c.Item2 == currentCoord);
+                while (lastCoord.Item1 != GetPos()) {
+                    lastCoord = cameFrom.Find(c => c.Item2 == lastCoord.Item1);
+                }
+                MoveCharacter(GetDirectionFromCoords(xPos, yPos, (int)lastCoord.Item2.x, (int)lastCoord.Item2.y));
+                return;
+            }
+
+            openSet.Remove(currentCoord);
+            List<Vector2> emptyAdjacentSpaces = GetAdjacentEmptySpaces((int)currentCoord.x, (int)currentCoord.y, false, false);
+            emptyAdjacentSpaces.ForEach(s => {
+                if (visited.FindIndex(v => v == s) == -1) {
+                    visited.Add(s);
+                    openSet.Add(s);
+                    cameFrom.Add((currentCoord, s));
+                }
+            });
+        }
+
         DumbMovement();
     }
 

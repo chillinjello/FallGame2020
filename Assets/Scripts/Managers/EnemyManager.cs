@@ -21,6 +21,8 @@ public class EnemyManager : MonoBehaviour, IGameManager
     GameObject SpawnPointPrefab;
     [SerializeField]
     GameObject WallPrefab;
+    [SerializeField]
+    public GameObject EnemyPuffPrefab;
 
     public List<Enemy> Enemies = new List<Enemy>();
 
@@ -37,7 +39,8 @@ public class EnemyManager : MonoBehaviour, IGameManager
 
     public bool moving = false;
     public bool attacking = false;
-    public bool movingOrAttacking { get { return moving || attacking; } }
+    public bool shaking = false;
+    public bool movingAttackingOrShaking { get { return moving || attacking || shaking; } }
 
     private void Awake() {
         //GameObject testEnemy = Instantiate(PlaceholderEnemyPrefab);
@@ -46,13 +49,15 @@ public class EnemyManager : MonoBehaviour, IGameManager
     }
 
     private void Update() {
-        if (movingOrAttacking) {
+        if (movingAttackingOrShaking) {
             //move enemies and see if any are still moving
             attacking = false;
             moving = false;
+            shaking = false;
             foreach(var enemy in Enemies) {
                 attacking = enemy.attacking || attacking;
                 moving = enemy.moving || moving;
+                shaking = enemy.shaking || shaking;
             }
         }
     }
@@ -108,6 +113,23 @@ public class EnemyManager : MonoBehaviour, IGameManager
             x = Random.Range(0, 6);
             y = Random.Range(0, 6);
             
+            if (Walls.FindIndex(w => w.xPos == x && w.yPos == y) != -1) inWall = true;
+        }
+
+        CreateNewSpawnPoint(x, y);
+        int xi = x;
+        int yi = y;
+        while (((x == 2 && y == 2)
+            || (x == 2 && y == 3)
+            || (x == 3 && y == 2)
+            || (x == 3 && y == 3)) 
+            || inWall
+            || (x == xi && y == yi)) {
+            inWall = false;
+
+            x = Random.Range(0, 6);
+            y = Random.Range(0, 6);
+
             if (Walls.FindIndex(w => w.xPos == x && w.yPos == y) != -1) inWall = true;
         }
 
@@ -178,7 +200,7 @@ public class EnemyManager : MonoBehaviour, IGameManager
                     Destroy(spawnPoint.gameObject);
                 }
 
-                if (spawnPoint.GetTime() == 0) {
+                if (spawnPoint.GetTime() == 0 && SpawnPoints.Count == 0) {
                     //create new Spawn Point
                     CreateRandomSpawnPoint();
                 }

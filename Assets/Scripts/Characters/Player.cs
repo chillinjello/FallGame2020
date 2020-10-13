@@ -92,10 +92,11 @@ public class Player : Character
         return MoveCharacter(direction);
     }
 
-    public override void Attack(int amount) {
+    public override bool Attack(int amount) {
         if (!invincible) {
-            base.Attack(amount);
+            return base.Attack(amount);
         }
+        return false;
     }
 
     public override bool MoveCharacter(MoveDirections direction) {
@@ -133,12 +134,16 @@ public class Player : Character
             Wall wall = collision.gameObject.GetComponent<Wall>();
             if (enemy != null) {
                 if (increasedAttack > 0) {
-                    enemy.Attack(int.MaxValue);
+                    if (enemy.Attack(int.MaxValue)) {
+                        Managers._player.AddScore(PlayerStatusManager.LOLLYPOP_KILL_SCORE);
+                    }
                     increasedAttack--;
                     SetPlayerSprite();
                 }
                 else {
-                    enemy.Attack(PLAYER_ATTACK);
+                    if (enemy.Attack(PLAYER_ATTACK)) {
+                        Managers._player.AddScore(PlayerStatusManager.KILL_ENEMY_SCORE);
+                    }
                 }
                 if (stunLips > 0) {
                     enemy.StunLips();
@@ -148,8 +153,8 @@ public class Player : Character
                 if (vampire > 0) {
                     currentHealth++;
                 }
-                AttackAnimation(direction);
                 SnapMovement();
+                AttackAnimation(direction);
                 return true;
             }
             else if (wall != null) {

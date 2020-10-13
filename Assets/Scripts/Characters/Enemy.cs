@@ -11,14 +11,25 @@ public class Enemy : Character {
     protected bool stunned = false;
     protected bool attacked = false;
 
-    public override void Attack(int amount) {
-        base.Attack(amount);
+    public override bool Attack(int amount) {
         stunned = true;
+        return base.Attack(amount);
     }
 
     public void StunLips() {
         lipStunned = 5;
     }
+
+    protected override void Update() {
+        if (!shaking && currentHealth <= 0) {
+            Managers._enemy.Enemies.Remove(this);
+            //var puff = Instantiate(Managers._enemy.EnemyPuffPrefab).GetComponent<Explosion>();
+            //puff.SetPosition(xPos, yPos);
+            //Managers._candy.AddExplosions(puff);
+            Destroy(this.gameObject);
+        }
+        base.Update();
+    } 
 
     public virtual bool EnemyAttack() {
         if (stunned || lipStunned > 0) {

@@ -90,6 +90,9 @@ public class CandyManager : MonoBehaviour, IGameManager {
     public void AddExplosions(List<Explosion> e) {
         explosions.AddRange(e);
     }
+    public void AddExplosions(Explosion e) {
+        explosions.Add(e);
+    }
 
     public bool IsExploding() {
         if (explosions.Count <= 0) return false;
@@ -251,8 +254,11 @@ public class CandyManager : MonoBehaviour, IGameManager {
 
         Managers._enemy.Enemies.ForEach(e => {
             if (e.xPos == playerPos.x || e.yPos == playerPos.y) {
-                e.Attack(CROSS_EXPLOSION_DAMAGE);
+                if (e.Attack(CROSS_EXPLOSION_DAMAGE)) {
+                    Managers._player.AddScore(PlayerStatusManager.KILL_WITH_COTTON_SCORE);
+                }
             }
+
         });
 
         AddExplosions(newExplosions);
@@ -264,7 +270,8 @@ public class CandyManager : MonoBehaviour, IGameManager {
 
     public void DuplicateTootsieEffect() {
         List<CandyTypes> potentialCandies = Managers._player.GetCurrentCandyTypes();
-        Managers._player.PickUpCandy(potentialCandies[Random.Range(0,potentialCandies.Count)]);
+        if (potentialCandies.Count > 0)
+            Managers._player.PickUpCandy(potentialCandies[Random.Range(0,potentialCandies.Count)]);
     }
 
     public void IncreaseAttackCandyEffect() {
@@ -291,11 +298,13 @@ public class CandyManager : MonoBehaviour, IGameManager {
 
     public void TurnIntoCandyEffect() {
         List<Enemy> enemies = Managers._enemy.Enemies;
+        if (enemies.Count <= 0) return;
         Enemy chosenEnemy = enemies[Random.Range(0, enemies.Count)];
         chosenEnemy.Attack(int.MaxValue);
         //if not on wall
         if (Managers._enemy.Walls.FindIndex(w => w.xPos == chosenEnemy.xPos && w.yPos == chosenEnemy.yPos) == -1) {
             SpawnCandy(chosenEnemy.xPos, chosenEnemy.yPos, false);
         }
+        Managers._player.AddScore(PlayerStatusManager.TURN_INTO_CANDY_SCORE);
     }
 }
