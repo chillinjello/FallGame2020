@@ -64,6 +64,8 @@ public class EnemyManager : MonoBehaviour, IGameManager
     
 
     public void EnemyAttack() {
+        //sort enemies
+        Enemies.Sort((e1,e2) => (e1.yPos * 10 + e1.xPos) - (e2.yPos * 10 + e2.xPos));
         foreach (var enemy in Enemies) {
             enemy.EnemyAttack();
         }
@@ -71,6 +73,8 @@ public class EnemyManager : MonoBehaviour, IGameManager
     }
 
     public void EnemyMove() {
+        //sort enemies
+        Enemies.Sort((e1, e2) => (e1.yPos * 10 + e1.xPos) - (e2.yPos * 10 + e2.xPos));
         foreach (var enemy in Enemies) {
             enemy.EnemyMove();
         }
@@ -198,12 +202,19 @@ public class EnemyManager : MonoBehaviour, IGameManager
                     //remove point
                     SpawnPoints.RemoveAt(i);
                     Destroy(spawnPoint.gameObject);
+
+                    if (spawnPoint.GetTime() == 0 && SpawnPoints.Count <= 0) {
+                        //create new Spawn Point
+                        CreateRandomSpawnPoint();
+                    }
+                }
+                else {
+                    if (spawnPoint.GetTime() == 0) {
+                        //create new Spawn Point
+                        CreateRandomSpawnPoint();
+                    }
                 }
 
-                if (spawnPoint.GetTime() == 0 && SpawnPoints.Count == 0) {
-                    //create new Spawn Point
-                    CreateRandomSpawnPoint();
-                }
             }
         }
     }

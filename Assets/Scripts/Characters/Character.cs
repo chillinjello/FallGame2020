@@ -212,6 +212,17 @@ public class Character : BoardItem
         return true;
     }
 
+    public virtual bool MoveCharacterSmooth(int x, int y) {
+        if (!BoardManager.CheckValidCoord(x, y))
+            return false;
+
+        //check if there's anything already on the square
+
+        SetPosition(x, y);
+        SetMoveSprite(x, y);
+        return true;
+    }
+
     public virtual void CharacterShake(bool dead = false) {
         if (dead) {
             shakeAmount = DEAD_SHAKE_AMOUNT;

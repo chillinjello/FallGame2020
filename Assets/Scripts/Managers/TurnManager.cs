@@ -189,7 +189,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
             gameEndScoreNumber.SetNumber(Managers._player.totalScore);
             gameEndScoreParent.SetActive(true);
         }
-        else if (Managers._player.totalCandyCount >= 2) {
+        else if (Managers._player.totalCandyCount >= 100) {
             gameWon = true;
             gameWonScreen.SetActive(true);
             Managers._player.AddScore(PlayerStatusManager.FINISH_GAME_SCORE);
@@ -300,6 +300,8 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     private bool DebugMode() {
+        return false;
+
         if (Input.GetKeyDown(KeyCode.R)) {
             RestartGame();
             return true;

@@ -292,7 +292,7 @@ public class CandyManager : MonoBehaviour, IGameManager {
         enemies.ForEach(e => {
             Vector2 newSpace = emptySpaces[Random.Range(0, emptySpaces.Count)];
             emptySpaces.Remove(newSpace);
-            e.MoveCharacter((int)newSpace.x, (int)newSpace.y);
+            e.MoveCharacterSmooth((int)newSpace.x, (int)newSpace.y);
         });
     }
 
