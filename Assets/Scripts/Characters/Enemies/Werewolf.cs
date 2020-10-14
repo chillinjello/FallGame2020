@@ -41,23 +41,33 @@ public class Werewolf : Enemy
     
     protected override void MoveCharacter() {
         if (movingOrAttacking) {
-            float speed;
-            float time;
-            if (attacking) {
-                attackTime += Time.deltaTime;
-                speed = attackSpeed;
-                time = attackTime;
-            }
-            else {
-                moveTime += Time.deltaTime;
-                speed = moveSpeed;
-                time = moveTime;
-            }
 
             Vector3 pos = new Vector3();
-            pos.x = (Mathf.Lerp(startPosition.x, movePosition.x, time / speed));
-            pos.y = (Mathf.Lerp(startPosition.y, movePosition.y, time / speed));
-            pos.z = transform.position.z;
+            if (movingFromCauldron) {
+                cauldronCurrentTime += Time.deltaTime;
+                pos = Vector3.Slerp(startPosition, movePosition, cauldronCurrentTime / CAULDRON_TIME);
+                if (cauldronCurrentTime > CAULDRON_TIME) {
+                    pos.x = movePosition.x;
+                    pos.y = movePosition.y;
+                }
+            }
+            else if (moving || attacking) {
+                float speed;
+                float time;
+                if (attacking) {
+                    attackTime += Time.deltaTime;
+                    speed = attackSpeed;
+                    time = attackTime;
+                }
+                else {
+                    moveTime += Time.deltaTime;
+                    speed = moveSpeed;
+                    time = moveTime;
+                }
+                pos.x = (Mathf.Lerp(startPosition.x, movePosition.x, time / speed));
+                pos.y = (Mathf.Lerp(startPosition.y, movePosition.y, time / speed));
+                pos.z = transform.position.z;
+            }
 
             transform.position = pos;
 
@@ -69,10 +79,14 @@ public class Werewolf : Enemy
                     }
                     return;
                 }
+                movingFromCauldron = false;
                 moving = false;
                 attacking = false;
+                cauldronCurrentTime = 0f;
                 moveTime = 0f;
                 attackTime = 0f;
+
+                Managers._turn.SortCharacterLayers();
             }
         }
     }

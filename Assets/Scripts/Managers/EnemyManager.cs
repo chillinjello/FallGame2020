@@ -8,6 +8,28 @@ public class EnemyManager : MonoBehaviour, IGameManager
     public ManagerStatus status { get; private set; }
 
     [SerializeField]
+    SpriteRenderer witch;
+    [SerializeField]
+    Sprite movingWitchSprite;
+    [SerializeField]
+    Sprite nonMovingWitchSprite;
+    float witchTime = 0;
+    public void SetWitchSpriteOn() {
+        witchTime = .75f;
+    }
+    private void WitchSprite() {
+        if (witchTime <= 0) {
+            witchTime = 0;
+            witch.sprite = nonMovingWitchSprite;
+            return;
+        }
+
+        witchTime -= Time.deltaTime;
+        witch.sprite = movingWitchSprite;
+    }
+
+
+    [SerializeField]
     GameObject PlaceholderEnemyPrefab;
     [SerializeField]
     GameObject VampirePrefab;
@@ -40,25 +62,31 @@ public class EnemyManager : MonoBehaviour, IGameManager
     public bool moving = false;
     public bool attacking = false;
     public bool shaking = false;
-    public bool movingAttackingOrShaking { get { return moving || attacking || shaking; } }
+    public bool movingFromCauldron = false;
+    public bool movingAttackingOrShaking { get { return moving || attacking || shaking || movingFromCauldron; } }
 
     private void Awake() {
-        //GameObject testEnemy = Instantiate(PlaceholderEnemyPrefab);
-        //Enemies.Add(testEnemy.GetComponent<Enemy>());
-        //testEnemy.GetComponent<Enemy>().MoveCharacter(0, 0);
     }
 
     private void Update() {
+        WitchSprite();
+        
         if (movingAttackingOrShaking) {
             //move enemies and see if any are still moving
             attacking = false;
             moving = false;
             shaking = false;
-            foreach(var enemy in Enemies) {
+            movingFromCauldron = false;
+            foreach (var enemy in Enemies) {
                 attacking = enemy.attacking || attacking;
                 moving = enemy.moving || moving;
                 shaking = enemy.shaking || shaking;
+                movingFromCauldron = enemy.movingFromCauldron || movingFromCauldron;
             }
+        }
+        
+        if (SpawnPoints.Count <= 0 && Managers._turn.gameStarted) {
+            CreateRandomSpawnPoint();
         }
     }
     
@@ -184,7 +212,7 @@ public class EnemyManager : MonoBehaviour, IGameManager
 
         GameObject testEnemy = Instantiate(enemyType);
         Enemies.Add(testEnemy.GetComponent<Enemy>());
-        testEnemy.GetComponent<Enemy>().MoveCharacter(x, y);
+        testEnemy.GetComponent<Enemy>().SetMoveFromCauldron(x, y);
     }
 
     public void TickSpawnPoints() {
@@ -202,19 +230,8 @@ public class EnemyManager : MonoBehaviour, IGameManager
                     //remove point
                     SpawnPoints.RemoveAt(i);
                     Destroy(spawnPoint.gameObject);
-
-                    if (spawnPoint.GetTime() == 0 && SpawnPoints.Count <= 0) {
-                        //create new Spawn Point
-                        CreateRandomSpawnPoint();
-                    }
+                    
                 }
-                else {
-                    if (spawnPoint.GetTime() == 0) {
-                        //create new Spawn Point
-                        CreateRandomSpawnPoint();
-                    }
-                }
-
             }
         }
     }

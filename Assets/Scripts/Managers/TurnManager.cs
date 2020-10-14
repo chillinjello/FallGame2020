@@ -11,7 +11,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
 
     [SerializeField]
     GameObject startGameScreen;
-    bool gameStarted = false;
+    public bool gameStarted = false;
 
     [SerializeField]
     bool debugMode = false;
@@ -236,7 +236,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
         return true;
     }
 
-    private void SortCharacterLayers() {
+    public void SortCharacterLayers() {
         List<Wall> walls = Managers._enemy.Walls;
         Player player = Player;
         List<Enemy> enemies = Managers._enemy.Enemies;

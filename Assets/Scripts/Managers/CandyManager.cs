@@ -220,6 +220,8 @@ public class CandyManager : MonoBehaviour, IGameManager {
 
         var player = Managers._turn.Player;
         player.MoveCharacter((int)emptySpace[0].x, (int)emptySpace[0].y);
+
+        Managers._turn.SortCharacterLayers();
     }
 
     public void BombCandyEffect() {
@@ -294,6 +296,8 @@ public class CandyManager : MonoBehaviour, IGameManager {
             emptySpaces.Remove(newSpace);
             e.MoveCharacterSmooth((int)newSpace.x, (int)newSpace.y);
         });
+
+        Managers._turn.SortCharacterLayers();
     }
 
     public void TurnIntoCandyEffect() {

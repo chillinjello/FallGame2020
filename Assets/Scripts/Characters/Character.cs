@@ -20,9 +20,18 @@ public class Character : BoardItem
     protected float attackTime = 0f;
     public bool attacking = false;
     //Both moving and attacking
-    public bool movingOrAttacking { get { return moving || attacking; } }
+    public bool movingOrAttacking { get { return moving || attacking || movingFromCauldron; } }
     protected Vector3 startPosition = Vector3.zero;
     protected Vector3 movePosition = Vector3.zero;
+    //Move from witch cauldron
+    public bool movingFromCauldron;
+    //float cauldron_w = 0;
+    //float cauldron_phi = 0;
+    Vector2 STARTING_POS = new Vector2(7.5f, 0.5f);
+    //const float MAX_HEIGHT = 4f;
+    protected const float CAULDRON_TIME = .5f;
+    protected float cauldronCurrentTime = 0;
+    //snap movement function
     public virtual void SnapMovement() {
         if (!moving && !attacking) return;
         moving = false;
@@ -74,31 +83,46 @@ public class Character : BoardItem
 
     protected virtual void MoveCharacter() {
         if (movingOrAttacking) {
-            float speed;
-            float time;
-            if (attacking) {
-                attackTime += Time.deltaTime;
-                speed = attackSpeed;
-                time = attackTime;
-            }
-            else {
-                moveTime += Time.deltaTime;
-                speed = moveSpeed;
-                time = moveTime;
-            }
 
             Vector3 pos = new Vector3();
-            pos.x = (Mathf.Lerp(startPosition.x, movePosition.x, time / speed));
-            pos.y = (Mathf.Lerp(startPosition.y, movePosition.y, time / speed));
-            pos.z = transform.position.z;
+            if (movingFromCauldron) {
+                cauldronCurrentTime += Time.deltaTime;
+                pos = Vector3.Slerp(startPosition, movePosition, cauldronCurrentTime / CAULDRON_TIME);
+                if (cauldronCurrentTime > CAULDRON_TIME) {
+                    pos.x = movePosition.x;
+                    pos.y = movePosition.y;
+                }
+            }
+            else if (moving || attacking) {
+                float speed;
+                float time;
+                if (attacking) {
+                    attackTime += Time.deltaTime;
+                    speed = attackSpeed;
+                    time = attackTime;
+                }
+                else {
+                    moveTime += Time.deltaTime;
+                    speed = moveSpeed;
+                    time = moveTime;
+                }
+                pos.x = (Mathf.Lerp(startPosition.x, movePosition.x, time / speed));
+                pos.y = (Mathf.Lerp(startPosition.y, movePosition.y, time / speed));
+                pos.z = transform.position.z;
+            }
+
 
             transform.position = pos;
 
             if (transform.position.x == movePosition.x && transform.position.y == movePosition.y) {
                 moving = false;
                 attacking = false;
+                movingFromCauldron = false;
+                cauldronCurrentTime = 0f;
                 moveTime = 0f;
                 attackTime = 0f;
+
+                Managers._turn.SortCharacterLayers();
             }
         }
     }
@@ -312,6 +336,25 @@ public class Character : BoardItem
         }
         if (allCoords.Count != visitedCoords.Count)
             return false;
+
+        return true;
+    }
+
+    public bool SetMoveFromCauldron(int x, int y) {
+        if (!BoardManager.CheckValidCoord(x, y))
+            return false;
+
+        Vector2 finalPos = BoardManager.GetCharacterPosition(sprite.sprite ,x, y);
+
+        cauldronCurrentTime = 0;
+        movingFromCauldron = true;
+
+        startPosition = STARTING_POS;
+        movePosition = finalPos;
+        
+        SetPosition(x, y);
+
+        Managers._enemy.SetWitchSpriteOn();
 
         return true;
     }
