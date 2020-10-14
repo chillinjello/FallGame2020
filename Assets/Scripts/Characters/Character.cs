@@ -29,7 +29,7 @@ public class Character : BoardItem
     //float cauldron_phi = 0;
     Vector2 STARTING_POS = new Vector2(7.5f, 0.5f);
     //const float MAX_HEIGHT = 4f;
-    protected const float CAULDRON_TIME = .5f;
+    protected const float CAULDRON_TIME = .4f;
     protected float cauldronCurrentTime = 0;
     //snap movement function
     public virtual void SnapMovement() {
@@ -345,6 +345,7 @@ public class Character : BoardItem
             return false;
 
         Vector2 finalPos = BoardManager.GetCharacterPosition(sprite.sprite ,x, y);
+        transform.position = STARTING_POS;
 
         cauldronCurrentTime = 0;
         movingFromCauldron = true;

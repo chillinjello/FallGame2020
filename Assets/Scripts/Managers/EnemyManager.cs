@@ -14,6 +14,8 @@ public class EnemyManager : MonoBehaviour, IGameManager
     [SerializeField]
     Sprite nonMovingWitchSprite;
     float witchTime = 0;
+    [SerializeField]
+    Number witchNumber;
     public void SetWitchSpriteOn() {
         witchTime = .75f;
     }
@@ -27,7 +29,13 @@ public class EnemyManager : MonoBehaviour, IGameManager
         witchTime -= Time.deltaTime;
         witch.sprite = movingWitchSprite;
     }
-
+    public void SetWitchNumber() {
+        int max = 0;
+        SpawnPoints.ForEach(s => {
+            max = Mathf.Max(max, s.GetTime());
+        });
+        witchNumber.SetNumber(max);
+    }
 
     [SerializeField]
     GameObject PlaceholderEnemyPrefab;
@@ -59,31 +67,17 @@ public class EnemyManager : MonoBehaviour, IGameManager
         status = ManagerStatus.Started;
     }
 
-    public bool moving = false;
-    public bool attacking = false;
-    public bool shaking = false;
-    public bool movingFromCauldron = false;
+    public bool moving { get { return Enemies.Find(e => e.moving) != null; } }
+    public bool attacking { get { return Enemies.Find(e => e.attacking) != null; } }
+    public bool shaking { get { return Enemies.Find(e => e.shaking) != null; } }
+    public bool movingFromCauldron { get { return Enemies.Find(e => e.movingFromCauldron) != null; } }
     public bool movingAttackingOrShaking { get { return moving || attacking || shaking || movingFromCauldron; } }
 
     private void Awake() {
     }
 
-    private void Update() {
+    private void LateUpdate() {
         WitchSprite();
-        
-        if (movingAttackingOrShaking) {
-            //move enemies and see if any are still moving
-            attacking = false;
-            moving = false;
-            shaking = false;
-            movingFromCauldron = false;
-            foreach (var enemy in Enemies) {
-                attacking = enemy.attacking || attacking;
-                moving = enemy.moving || moving;
-                shaking = enemy.shaking || shaking;
-                movingFromCauldron = enemy.movingFromCauldron || movingFromCauldron;
-            }
-        }
         
         if (SpawnPoints.Count <= 0 && Managers._turn.gameStarted) {
             CreateRandomSpawnPoint();
@@ -97,7 +91,6 @@ public class EnemyManager : MonoBehaviour, IGameManager
         foreach (var enemy in Enemies) {
             enemy.EnemyAttack();
         }
-        attacking = true;
     }
 
     public void EnemyMove() {
@@ -106,7 +99,6 @@ public class EnemyManager : MonoBehaviour, IGameManager
         foreach (var enemy in Enemies) {
             enemy.EnemyMove();
         }
-        moving = true;
     }
 
     public void StartGame() {
@@ -188,6 +180,7 @@ public class EnemyManager : MonoBehaviour, IGameManager
         var newSpawn = Instantiate(SpawnPointPrefab).GetComponent<SpawnPoint>();
         SpawnPoints.Add(newSpawn);
         newSpawn.SetPosition(x, y);
+        SetWitchNumber();
     }
     
     public void SpawnEnemy(int x, int y) {
@@ -234,6 +227,7 @@ public class EnemyManager : MonoBehaviour, IGameManager
                 }
             }
         }
+        SetWitchNumber();
     }
     
     public void ClearGame() {

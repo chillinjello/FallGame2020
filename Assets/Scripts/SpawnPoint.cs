@@ -6,6 +6,8 @@ public class SpawnPoint : BoardItem
 {
     [SerializeField]
     TextMesh spawnText;
+
+    SpriteRenderer sprite;
     
     
     const int DEFAULT_TIMER = 5;
@@ -19,20 +21,14 @@ public class SpawnPoint : BoardItem
 
     private void Awake() {
         var textRenderer = spawnText.gameObject.GetComponent<MeshRenderer>();
-        var imageRenderer = GetComponent<SpriteRenderer>();
-        textRenderer.sortingOrder = imageRenderer.sortingOrder;
-        textRenderer.sortingLayerID = imageRenderer.sortingLayerID;
+        sprite = GetComponent<SpriteRenderer>();
+        textRenderer.sortingOrder = sprite.sortingOrder;
+        textRenderer.sortingLayerID = sprite.sortingLayerID;
     }
 
     private void Update() {
-        if (timer < 0) {
-            spawnText.text = timeValues[0];
-        }
-        else if (timer > 10) {
-            spawnText.text = timeValues[10];
-        }
-        else {
-            spawnText.text = timeValues[timer];
+        if (timer <= 0) {
+            sprite.color = new Color32(154, 45, 45, 255);
         }
     }
 

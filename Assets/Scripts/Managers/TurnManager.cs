@@ -57,29 +57,34 @@ public class TurnManager : MonoBehaviour, IGameManager {
             return;
         }
         
-        if (turn == Turn.tickBombs) {
+        if (turn == Turn.tickBombs && !Managers._enemy.movingAttackingOrShaking) {
             Managers._candy.TickBombs();
             PostBombTurn();
             turn = Turn.playerTurn;
+            return;
         }
         else if (turn == Turn.playerTurn && !Managers._enemy.movingAttackingOrShaking && !Managers._candy.IsExploding() && HandlePlayerInput()) {
             PostPlayerTurn();
             turn = Turn.enemyAttack;
+            return;
         }
         else if (turn == Turn.enemyAttack && !Player.movingOrAttacking && !Managers._enemy.movingAttackingOrShaking) {
             Managers._enemy.EnemyAttack();
             PostEnemyAttack();
             turn = Turn.enemyMove;
+            return;
         }
         else if (turn == Turn.enemyMove && !Player.movingOrAttacking && !Managers._enemy.movingAttackingOrShaking) {
             Managers._enemy.EnemyMove();
             PostEnemyMove();
             turn = Turn.spawnEnemies;
+            return;
         }
         else if (turn == Turn.spawnEnemies && !Player.movingOrAttacking && !Managers._enemy.movingAttackingOrShaking) {
             Managers._enemy.TickSpawnPoints();
             PostEveryTurn();
             turn = Turn.tickBombs;
+            return;
         }
     }
 
@@ -300,7 +305,6 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     private bool DebugMode() {
-        return false;
 
         if (Input.GetKeyDown(KeyCode.R)) {
             RestartGame();
