@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class TurnManager : MonoBehaviour, IGameManager {
     public ManagerStatus status { get; private set; }
@@ -9,9 +10,6 @@ public class TurnManager : MonoBehaviour, IGameManager {
     GameObject PlayerPrefab;
     public Player Player;
 
-    [SerializeField]
-    GameObject startGameScreen;
-    public bool gameStarted = false;
 
     [SerializeField]
     bool debugMode = false;
@@ -37,11 +35,13 @@ public class TurnManager : MonoBehaviour, IGameManager {
     Number gameEndScoreNumber;
     [SerializeField]
     GameObject gameEndScoreParent;
+    
 
     public void Startup() {
         status = ManagerStatus.Initializing;
         Debug.Log("Started Turn Manager...");
 
+        pixelCamera.stretchFill = PlayerPrefs.GetInt("streched", 0) == 0 ? false : true;
 
         status = ManagerStatus.Started;
     }
@@ -90,16 +90,16 @@ public class TurnManager : MonoBehaviour, IGameManager {
 
     private bool HandlePlayerInput() {
         Character.MoveDirections direction = Character.MoveDirections.none;
-        if (Input.GetKeyDown(KeyCode.A)) {
+        if (LeftButton()) {
             direction = Character.MoveDirections.left;
         }
-        else if (Input.GetKeyDown(KeyCode.S)) {
+        else if (DownButton()) {
             direction = Character.MoveDirections.down;
         }
-        else if (Input.GetKeyDown(KeyCode.D)) {
+        else if (RightButton()) {
             direction = Character.MoveDirections.right;
         }
-        else if (Input.GetKeyDown(KeyCode.W)) {
+        else if (UpButton()) {
             direction = Character.MoveDirections.up;
         }
         else {
@@ -110,10 +110,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     private bool GettingPlayerInput() {
-        if (Input.GetKeyDown(KeyCode.A)
-            || Input.GetKeyDown(KeyCode.S)
-            || Input.GetKeyDown(KeyCode.D)
-            || Input.GetKeyDown(KeyCode.W)) {
+        if (UpButton() || DownButton() || RightButton() || LeftButton()) {
             return true;
         }
         else {
@@ -159,7 +156,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
 
     private void ClearGame() {
         //Remove Player
-        Destroy(Player.gameObject);
+        if (Player != null) Destroy(Player.gameObject);
         //Remove Enemies
         Managers._enemy.ClearGame();
         //Remove Candies
@@ -171,19 +168,129 @@ public class TurnManager : MonoBehaviour, IGameManager {
         BeginGame();
     }
 
+    [SerializeField]
+    SpriteRenderer startGameScreen;
+    [SerializeField]
+    Sprite startGameStartSprite;
+    [SerializeField]
+    Sprite startGameQuitSprite;
+    [SerializeField]
+    Sprite startGameOptionsSprite;
+    [SerializeField]
+    Sprite optionsBackOffSprite;
+    [SerializeField]
+    Sprite optionsBackOnSprite;
+    [SerializeField]
+    Sprite optionsStretchOffSprite;
+    [SerializeField]
+    Sprite optionsStretchOnSprite;
+    [SerializeField]
+    PixelPerfectCamera pixelCamera;
+    public bool gameStarted = false;
+    private enum MenuScreen {
+        MainOption,
+        MainStart,
+        MainQuit,
+        OptionStretch,
+        OptionBack
+    }
+    MenuScreen currentMenuScreen = MenuScreen.MainStart;
     private bool HandleGameStart() {
         if (gameStarted) return false;
 
         if (Input.GetKeyDown(KeyCode.Space)) {
-            gameStarted = true;
-            startGameScreen.SetActive(false);
-            BeginGame();
-            PostEveryTurn();
+            switch(currentMenuScreen) {
+                case MenuScreen.MainOption:
+                    currentMenuScreen = MenuScreen.OptionBack;
+                    break;
+                case MenuScreen.MainStart:
+                    gameStarted = true;
+                    startGameScreen.gameObject.SetActive(false);
+                    RestartGame();
+                    PostEveryTurn();
+                    break;
+                case MenuScreen.MainQuit:
+                    Application.Quit();
+                    break;
+                case MenuScreen.OptionBack:
+                    currentMenuScreen = MenuScreen.MainStart;
+                    break;
+                case MenuScreen.OptionStretch:
+                    pixelCamera.stretchFill = !pixelCamera.stretchFill;
+                    PlayerPrefs.SetInt("streched", pixelCamera.stretchFill ? 1 : 0);
+                    break;
+            }
+        }
+        else if (UpButton()) {
+            switch (currentMenuScreen) {
+                case MenuScreen.MainStart:
+                    currentMenuScreen = MenuScreen.MainOption;
+                    break;
+                case MenuScreen.OptionBack:
+                    currentMenuScreen = MenuScreen.OptionStretch;
+                    break;
+            }
+        }
+        else if (LeftButton()) {
+            switch (currentMenuScreen) {
+                case MenuScreen.MainQuit:
+                    currentMenuScreen = MenuScreen.MainOption;
+                    break;
+            }
+        }
+        else if (RightButton()) {
+            switch (currentMenuScreen) {
+                case MenuScreen.MainOption:
+                    currentMenuScreen = MenuScreen.MainQuit;
+                    break;
+            }
+        }
+        else if (DownButton()) {
+            switch (currentMenuScreen) {
+                case MenuScreen.MainQuit:
+                case MenuScreen.MainOption:
+                    currentMenuScreen = MenuScreen.MainStart;
+                    break;
+                case MenuScreen.OptionStretch:
+                    currentMenuScreen = MenuScreen.OptionBack;
+                    break;
+            }
         }
         
         if (gameStarted) return false;
+
+        switch (currentMenuScreen) {
+            case MenuScreen.MainStart:
+                startGameScreen.sprite = startGameStartSprite;
+                break;
+            case MenuScreen.MainQuit:
+                startGameScreen.sprite = startGameQuitSprite;
+                break;
+            case MenuScreen.MainOption:
+                startGameScreen.sprite = startGameOptionsSprite;
+                break;
+            case MenuScreen.OptionBack:
+                if (pixelCamera.stretchFill) {
+                    startGameScreen.sprite = optionsBackOnSprite;
+                } else {
+                    startGameScreen.sprite = optionsBackOffSprite;
+                }
+                break;
+            case MenuScreen.OptionStretch:
+                if (pixelCamera.stretchFill) {
+                    startGameScreen.sprite = optionsStretchOnSprite;
+                }
+                else {
+                    startGameScreen.sprite = optionsStretchOffSprite;
+                }
+                break;
+        }
         
-        startGameScreen.SetActive(true);
+        startGameScreen.gameObject.SetActive(true);
+        gameOverScreen.SetActive(false);
+        gameEndScoreNumber.SetNumber(0);
+        gameEndScoreParent.SetActive(false);
+        gameWonScreen.SetActive(false);
         return true;
     }
 
@@ -215,6 +322,14 @@ public class TurnManager : MonoBehaviour, IGameManager {
             gameEndScoreParent.SetActive(false);
             RestartGame();
         }
+        else if (Input.GetKeyDown(KeyCode.Escape)) {
+            gameStarted = false;
+            gameOver = false;
+            gameWon = false;
+            gameOverScreen.SetActive(false);
+            gameEndScoreNumber.SetNumber(0);
+            gameEndScoreParent.SetActive(false);
+        }
 
         if (!gameOver) return false;
 
@@ -233,6 +348,14 @@ public class TurnManager : MonoBehaviour, IGameManager {
             gameEndScoreNumber.SetNumber(0);
             gameEndScoreParent.SetActive(false);
             RestartGame();
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape)) {
+            gameStarted = false;
+            gameOver = false;
+            gameWon = false;
+            gameWonScreen.SetActive(false);
+            gameEndScoreNumber.SetNumber(0);
+            gameEndScoreParent.SetActive(false);
         }
 
         if (!gameWon) return false;
@@ -324,5 +447,18 @@ public class TurnManager : MonoBehaviour, IGameManager {
         }
 
         return false;
+    }
+
+    private bool UpButton() {
+        return Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow);
+    }
+    private bool DownButton() {
+        return Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow);
+    }
+    private bool LeftButton() {
+        return Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow);
+    }
+    private bool RightButton() {
+        return Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow);
     }
 }

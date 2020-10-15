@@ -990,7 +990,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 9
-  m_Sprite: {fileID: 21300000, guid: 007b378c6e18559469262e544ebf2b2d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f9b97edfa3478244483804b3a6ccf6ac, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1008,8 +1008,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 451123647}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.625, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 725489824}
@@ -2191,6 +2191,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4911cef23d5824740b55803f0bc78f76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &964517182 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2358690086080277080, guid: 0f772953be08f694893f734b7d9154c1,
+    type: 3}
+  m_PrefabInstance: {fileID: 2358690085700224813}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a160d838ff8b4b4693ac20007e008c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &980185295
@@ -5743,7 +5755,7 @@ PrefabInstance:
         type: 3}
       propertyPath: startGameScreen
       value: 
-      objectReference: {fileID: 451123647}
+      objectReference: {fileID: 451123648}
     - target: {fileID: 2406517245879260736, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
         type: 3}
       propertyPath: gameOverScreen
@@ -5764,6 +5776,53 @@ PrefabInstance:
       propertyPath: gameEndScoreNumber
       value: 
       objectReference: {fileID: 1499901268}
+    - target: {fileID: 2406517245879260736, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
+        type: 3}
+      propertyPath: startGameStartSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f9b97edfa3478244483804b3a6ccf6ac,
+        type: 3}
+    - target: {fileID: 2406517245879260736, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
+        type: 3}
+      propertyPath: startGameQuitSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c919dd3177256564d86fe092cdab0f78,
+        type: 3}
+    - target: {fileID: 2406517245879260736, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
+        type: 3}
+      propertyPath: startGameOptionsSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4745205a706e2ef4599fcc61eaa70ac4,
+        type: 3}
+    - target: {fileID: 2406517245879260736, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
+        type: 3}
+      propertyPath: optionsBackOffSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ebb6a3ae3ad83254186efc9ea8323873,
+        type: 3}
+    - target: {fileID: 2406517245879260736, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
+        type: 3}
+      propertyPath: optionsBackOnSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d42a592658d42134881c5a48fe61c54e,
+        type: 3}
+    - target: {fileID: 2406517245879260736, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
+        type: 3}
+      propertyPath: optionsStretchOffSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a6331645b1908b54fb8ae4bbc0269571,
+        type: 3}
+    - target: {fileID: 2406517245879260736, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
+        type: 3}
+      propertyPath: optionsStretchOnSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: eb560e4bc89e952409ad46c8cc08251a,
+        type: 3}
+    - target: {fileID: 2406517245879260736, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
+        type: 3}
+      propertyPath: pixelCamera
+      value: 
+      objectReference: {fileID: 964517182}
     - target: {fileID: 2406517245879260748, guid: e7fb20b7dd6bb564ebb9b4f2579d8f82,
         type: 3}
       propertyPath: m_Name
