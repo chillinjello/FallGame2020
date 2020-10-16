@@ -71,7 +71,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 0fb7a571290b89443bf497f42bd6604b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e319d938447ea8945a0feee87f4f5ee6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -97,9 +97,6 @@ MonoBehaviour:
   xPos: -1
   yPos: -1
   WallSprites:
-  - {fileID: 21300000, guid: 0fb7a571290b89443bf497f42bd6604b, type: 3}
-  - {fileID: 21300000, guid: 233f63ea32dc24440874b952080fe18e, type: 3}
-  - {fileID: 21300000, guid: 64df665b4f01bb941b6363cb637a53d3, type: 3}
-  - {fileID: 21300000, guid: 68e657ad76c35de47ac1a810419edaa3, type: 3}
-  - {fileID: 21300000, guid: 9ac1d8aa4b1549d46a38c243789c4ee5, type: 3}
-  - {fileID: 21300000, guid: 5af3ac1f3d1b1ef41b56248b38824c5c, type: 3}
+  - {fileID: 21300000, guid: e319d938447ea8945a0feee87f4f5ee6, type: 3}
+  - {fileID: 21300000, guid: bff6acd6ab8b8b54781895dd4c6c9e3d, type: 3}
+  - {fileID: 21300000, guid: 894736a1fc43b4a49a4af2521facb398, type: 3}

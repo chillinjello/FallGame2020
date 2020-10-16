@@ -11,6 +11,7 @@ public class Wall : BoardItem
 
     private void Awake() {
         renderer = GetComponent<SpriteRenderer>();
+        renderer.sprite = WallSprites[Random.Range(0, WallSprites.Count)];
     }
 
     public void SetWallPosition(int x, int y) {
@@ -19,6 +20,5 @@ public class Wall : BoardItem
         transform.position = BoardManager.GetCoords(x, y);
         xPos = x;
         yPos = y;
-        renderer.sprite = WallSprites[x];
     }
 }

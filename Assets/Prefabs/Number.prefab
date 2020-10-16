@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 4547a7c3dbb2b694bb94bf6a0973e884, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7843138, g: 0.5686275, b: 0.24313727, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -108,3 +108,4 @@ MonoBehaviour:
   commaSprite: {fileID: 21300000, guid: 1ba07b639dbb26e4792c47b30fb65931, type: 3}
   isComma: 0
   moreSignificantNumber: {fileID: 0}
+  PreviousComma: {fileID: 0}
