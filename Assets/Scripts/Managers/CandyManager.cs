@@ -41,6 +41,7 @@ public class CandyManager : MonoBehaviour, IGameManager {
     GameObject TurnIntoCandyPrefab;
 
 
+
     public List<Candy> Candies = new List<Candy>();
     Candy mainCandy = null;
 

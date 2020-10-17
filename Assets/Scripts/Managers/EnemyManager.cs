@@ -8,6 +8,13 @@ public class EnemyManager : MonoBehaviour, IGameManager
     public ManagerStatus status { get; private set; }
 
     [SerializeField]
+    AudioSource EnemyMoveSound;
+    [SerializeField]
+    AudioSource BubblingSound;
+    [SerializeField]
+    List<AudioSource> HitSounds;
+
+    [SerializeField]
     SpriteRenderer witch;
     [SerializeField]
     Sprite movingWitchSprite;
@@ -91,6 +98,11 @@ public class EnemyManager : MonoBehaviour, IGameManager
         foreach (var enemy in Enemies) {
             enemy.EnemyAttack();
         }
+        if (attacking)
+            EnemyHitSounds();
+    }
+    public void EnemyHitSounds() {
+        HitSounds[Random.Range(0, HitSounds.Count)].Play();
     }
 
     public void EnemyMove() {
@@ -99,6 +111,8 @@ public class EnemyManager : MonoBehaviour, IGameManager
         foreach (var enemy in Enemies) {
             enemy.EnemyMove();
         }
+        if (moving)
+            EnemyMoveSound.Play();
     }
 
     public void StartGame() {
@@ -209,6 +223,7 @@ public class EnemyManager : MonoBehaviour, IGameManager
     }
 
     public void TickSpawnPoints() {
+        bool spawned = false;
         for (int i = SpawnPoints.Count - 1; i >= 0; i--) {
             var spawnPoint = SpawnPoints[i];
             spawnPoint.SubtractTimer(1);
@@ -223,10 +238,11 @@ public class EnemyManager : MonoBehaviour, IGameManager
                     //remove point
                     SpawnPoints.RemoveAt(i);
                     Destroy(spawnPoint.gameObject);
-                    
+                    spawned = true;
                 }
             }
         }
+        if (spawned) BubblingSound.Play();
         SetWitchNumber();
     }
     

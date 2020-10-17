@@ -77,6 +77,9 @@ public class Werewolf : Enemy
                     if (!EnemyAttack()) {
                         base.EnemyMove();
                     }
+                    else {
+                        Managers._enemy.EnemyHitSounds();
+                    }
                     return;
                 }
                 movingFromCauldron = false;

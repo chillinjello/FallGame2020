@@ -85,7 +85,12 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
     Number turnIntoCandyNumber;
     private int turnIntoCandyCount = 0;
 
+    [SerializeField]
+    AudioSource PickupCandy;
     
+    [SerializeField]
+    AudioSource PopSound;
+
     public bool UseCandy() {
         if (Input.GetKeyDown(KeyCode.Alpha1)) {
             if (teleportCandyCount <= 0) return false;
@@ -139,6 +144,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
 
             increaseAttackCandyCount--;
             SetCandyCount();
+            PopSound.Play();
             return true;
         }
         else if (Input.GetKeyDown(KeyCode.Alpha7)) {
@@ -214,6 +220,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
                 break;
         }
 
+        PickupCandy.Play();
         AddScore(PICKUP_CANDY_SCORE);
         totalCandyCount++;
         SetCandyCount();

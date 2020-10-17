@@ -39,6 +39,12 @@ public class Player : Character
     [SerializeField]
     Sprite popSprite;
 
+    //Sounds
+    [SerializeField]
+    AudioSource MoveSound;
+    [SerializeField]
+    List<AudioSource> HitSounds;
+
 
     [SerializeField]
     bool invincible = false;
@@ -154,6 +160,7 @@ public class Player : Character
                     currentHealth++;
                 }
                 SnapMovement();
+                PlayerHitSounds();
                 AttackAnimation(direction);
                 return true;
             }
@@ -184,8 +191,13 @@ public class Player : Character
             SnapMovement();
             SetPosition(newX, newY);
             SetMoveSprite(newX, newY);
+            MoveSound.Play();
             return true;
         }
+    }
+
+    private void PlayerHitSounds() {
+        HitSounds[Random.Range(0, HitSounds.Count)].Play();
     }
 
     private void SetPlayerSprite() {

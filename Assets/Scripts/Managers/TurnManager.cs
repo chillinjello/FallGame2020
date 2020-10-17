@@ -35,6 +35,12 @@ public class TurnManager : MonoBehaviour, IGameManager {
     Number gameEndScoreNumber;
     [SerializeField]
     GameObject gameEndScoreParent;
+
+    //Sounds
+    [SerializeField]
+    AudioSource WitchLaugh;
+    [SerializeField]
+    AudioSource MenuNoise;
     
 
     public void Startup() {
@@ -152,6 +158,8 @@ public class TurnManager : MonoBehaviour, IGameManager {
         Managers._player.StartGame();
 
         SortCharacterLayers();
+
+        WitchLaugh.Play();
     }
 
     private void ClearGame() {
@@ -202,6 +210,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
             switch(currentMenuScreen) {
                 case MenuScreen.MainOption:
                     currentMenuScreen = MenuScreen.OptionBack;
+                    MenuNoise.Play();
                     break;
                 case MenuScreen.MainStart:
                     gameStarted = true;
@@ -211,23 +220,29 @@ public class TurnManager : MonoBehaviour, IGameManager {
                     break;
                 case MenuScreen.MainQuit:
                     Application.Quit();
+                    MenuNoise.Play();
                     break;
                 case MenuScreen.OptionBack:
                     currentMenuScreen = MenuScreen.MainStart;
+                    MenuNoise.Play();
                     break;
                 case MenuScreen.OptionStretch:
                     pixelCamera.stretchFill = !pixelCamera.stretchFill;
                     PlayerPrefs.SetInt("streched", pixelCamera.stretchFill ? 1 : 0);
+                    MenuNoise.Play();
                     break;
             }
+
         }
         else if (UpButton()) {
             switch (currentMenuScreen) {
                 case MenuScreen.MainStart:
                     currentMenuScreen = MenuScreen.MainOption;
+                    MenuNoise.Play();
                     break;
                 case MenuScreen.OptionBack:
                     currentMenuScreen = MenuScreen.OptionStretch;
+                    MenuNoise.Play();
                     break;
             }
         }
@@ -235,6 +250,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
             switch (currentMenuScreen) {
                 case MenuScreen.MainQuit:
                     currentMenuScreen = MenuScreen.MainOption;
+                    MenuNoise.Play();
                     break;
             }
         }
@@ -242,6 +258,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
             switch (currentMenuScreen) {
                 case MenuScreen.MainOption:
                     currentMenuScreen = MenuScreen.MainQuit;
+                    MenuNoise.Play();
                     break;
             }
         }
@@ -250,9 +267,11 @@ public class TurnManager : MonoBehaviour, IGameManager {
                 case MenuScreen.MainQuit:
                 case MenuScreen.MainOption:
                     currentMenuScreen = MenuScreen.MainStart;
+                    MenuNoise.Play();
                     break;
                 case MenuScreen.OptionStretch:
                     currentMenuScreen = MenuScreen.OptionBack;
+                    MenuNoise.Play();
                     break;
             }
         }
@@ -329,6 +348,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
             gameOverScreen.SetActive(false);
             gameEndScoreNumber.SetNumber(0);
             gameEndScoreParent.SetActive(false);
+            MenuNoise.Play();
         }
 
         if (!gameOver) return false;
@@ -356,6 +376,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
             gameWonScreen.SetActive(false);
             gameEndScoreNumber.SetNumber(0);
             gameEndScoreParent.SetActive(false);
+            MenuNoise.Play();
         }
 
         if (!gameWon) return false;
@@ -435,6 +456,8 @@ public class TurnManager : MonoBehaviour, IGameManager {
         }
 
         if (Input.GetKeyDown(KeyCode.E)) {
+            Managers._player.PickUpCandy(CandyManager.CandyTypes.TeleportCandy);
+            Managers._player.PickUpCandy(CandyManager.CandyTypes.BombCandy);
             Managers._player.PickUpCandy(CandyManager.CandyTypes.CrossCandy);
             Managers._player.PickUpCandy(CandyManager.CandyTypes.StunLips);
             Managers._player.PickUpCandy(CandyManager.CandyTypes.DuplicateToosie);
