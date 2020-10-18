@@ -56,7 +56,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
     //candy counter sprites
     [SerializeField]
     Number teleportCandyNumber;
-    private int teleportCandyCount = 0;
+    private int teleportCandyCount = 1;
     [SerializeField]
     Number bombCandyNumber;
     private int bombCandyCount = 0;
@@ -324,7 +324,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
         totalScore = 0;
         lastAddedScore = 0;
         totalCandyCount = 0;
-        teleportCandyCount = 0;
+        teleportCandyCount = 1;
         bombCandyCount = 0;
         totalScore = 0;
         crossCandyCount = 0;

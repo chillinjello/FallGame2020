@@ -457,7 +457,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     private bool DebugMode() {
-
+        return false;
         if (Input.GetKeyDown(KeyCode.R)) {
             RestartGame();
             return true;

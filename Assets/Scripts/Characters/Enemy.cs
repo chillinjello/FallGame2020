@@ -20,7 +20,18 @@ public class Enemy : Character {
         lipStunned = 5;
     }
 
+    [SerializeField]
+    GameObject stunObject;
+
     protected override void Update() {
+        if (lipStunned > 0) {
+            stunObject.SetActive(true);
+            stunObject.transform.position = this.transform.position - new Vector3(0, 0, 0.01f);
+        }
+        else {
+            stunObject.SetActive(false);
+        }
+
         if (!shaking && currentHealth <= 0) {
             Managers._enemy.Enemies.Remove(this);
             //var puff = Instantiate(Managers._enemy.EnemyPuffPrefab).GetComponent<Explosion>();
