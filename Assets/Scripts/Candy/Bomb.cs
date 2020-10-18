@@ -12,6 +12,9 @@ public class Bomb : BoardItem
     [SerializeField]
     GameObject explosionPrefab;
 
+    [SerializeField]
+    AudioSource ExplosionSound;
+
     SpriteRenderer renderer;
 
     const int STARTING_TICK = 3;
@@ -102,7 +105,9 @@ public class Bomb : BoardItem
         Managers._candy.RemoveBomb(this);
 
         Managers._candy.AddExplosions(explosions);
-        
+
+        //ExplosionSound.Play();
+        Managers._player.BombSound.Play();
         Destroy(this.gameObject);
     }
 }

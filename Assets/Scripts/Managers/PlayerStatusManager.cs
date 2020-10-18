@@ -90,6 +90,21 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
     
     [SerializeField]
     AudioSource PopSound;
+    [SerializeField]
+    AudioSource SkittlesSound;
+    [SerializeField]
+    AudioSource GulpSound;
+    [SerializeField]
+    AudioSource KissSound;
+    [SerializeField]
+    AudioSource TeleportSound;
+    [SerializeField]
+    AudioSource CrossSound;
+    [SerializeField]
+    public AudioSource BombSound;
+    [SerializeField]
+    AudioSource BatSound;
+
 
     public bool UseCandy() {
         if (Input.GetKeyDown(KeyCode.Alpha1)) {
@@ -97,6 +112,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
 
             Managers._candy.TeleportCandyEffect();
 
+            TeleportSound.Play();
             teleportCandyCount--;
             SetCandyCount();
             return true;
@@ -105,7 +121,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
             if (bombCandyCount <= 0) return false;
 
             Managers._candy.BombCandyEffect();
-
+            
             bombCandyCount--;
             SetCandyCount();
             return true;
@@ -115,6 +131,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
 
             Managers._candy.CrossCandyEffect();
 
+            CrossSound.Play();
             crossCandyCount--;
             SetCandyCount();
             return true;
@@ -124,6 +141,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
 
             Managers._candy.StunLipsEffect();
 
+            KissSound.Play();
             stunLipsCount--;
             SetCandyCount();
             return true;
@@ -134,6 +152,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
             duplicateTootsieCount--;
             Managers._candy.DuplicateTootsieEffect();
 
+            GulpSound.Play();
             SetCandyCount();
             return true;
         }
@@ -152,6 +171,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
 
             Managers._candy.BatWingsEffect();
 
+            BatSound.Play();
             batWingsCount--;
             SetCandyCount();
             return true;
@@ -161,6 +181,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
 
             Managers._candy.VampireCandyEffect();
 
+            GulpSound.Play();
             vampireCandyCount--;
             SetCandyCount();
             return true;
@@ -170,6 +191,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
 
             Managers._candy.TeleportEnemiesCandyEffect();
 
+            TeleportSound.Play();
             teleportEnemiesCandyCount--;
             SetCandyCount();
             return true;
@@ -179,6 +201,7 @@ public class PlayerStatusManager : MonoBehaviour, IGameManager {
 
             Managers._candy.TurnIntoCandyEffect();
 
+            SkittlesSound.Play();
             turnIntoCandyCount--;
             SetCandyCount();
             return true;

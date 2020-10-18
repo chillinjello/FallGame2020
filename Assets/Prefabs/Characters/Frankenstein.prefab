@@ -101,13 +101,14 @@ MonoBehaviour:
   moveSpeed: 0.2
   moving: 0
   attacking: 0
+  movingFromCauldron: 0
   currentHealth: 3
   HealthSprites:
-  - {fileID: 21300000, guid: 50f1998e03be3654eac968d12883e21d, type: 3}
-  - {fileID: 21300000, guid: 8ee334689e929bd498eb022390e3800a, type: 3}
-  - {fileID: 21300000, guid: 2f149825b56ab214885283c68c08530e, type: 3}
-  - {fileID: 21300000, guid: 115a56ca419c8b144a5e91e6739598f5, type: 3}
-  - {fileID: 21300000, guid: ba2eabf1353e92445b2f025ac3958ea9, type: 3}
+  - {fileID: 21300000, guid: b90e381dc9d930a47a6456b4ece11420, type: 3}
+  - {fileID: 21300000, guid: fcf67dffa0ba1054d8bbf97e10ee0d53, type: 3}
+  - {fileID: 21300000, guid: aeb4d6c50a6847d43a24409c0dfa499b, type: 3}
+  - {fileID: 21300000, guid: 80a9ee09aee9503498503125e9505160, type: 3}
+  - {fileID: 21300000, guid: b333510b767b90a40b5b10ec07bca8f8, type: 3}
   - {fileID: 21300000, guid: 2ff68e97c9125b5449bd45f87f94d84d, type: 3}
   - {fileID: 21300000, guid: af2f79f9e47576a4f9c2ed16f7c521d9, type: 3}
   - {fileID: 21300000, guid: e593b7f5a5ba7a24d84acc28a98867c5, type: 3}

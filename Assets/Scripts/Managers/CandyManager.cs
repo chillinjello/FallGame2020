@@ -40,8 +40,6 @@ public class CandyManager : MonoBehaviour, IGameManager {
     [SerializeField]
     GameObject TurnIntoCandyPrefab;
 
-
-
     public List<Candy> Candies = new List<Candy>();
     Candy mainCandy = null;
 

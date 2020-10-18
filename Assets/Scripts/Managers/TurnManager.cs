@@ -41,7 +41,8 @@ public class TurnManager : MonoBehaviour, IGameManager {
     AudioSource WitchLaugh;
     [SerializeField]
     AudioSource MenuNoise;
-    
+    [SerializeField]
+    AudioSource WindNoise;
 
     public void Startup() {
         status = ManagerStatus.Initializing;
@@ -57,6 +58,13 @@ public class TurnManager : MonoBehaviour, IGameManager {
         if (HandleGameOver()) return;
         if (HandleWin()) return;
         if (DebugMode()) return;
+
+        if (gameStarted && !WindNoise.isPlaying && !WitchLaugh.isPlaying) {
+            WindNoise.Play();
+        }
+        else if (!gameStarted && WindNoise.isPlaying) {
+            WindNoise.Stop();
+        }
 
         if (Player == null) {
             Player = FindObjectOfType<Player>();
