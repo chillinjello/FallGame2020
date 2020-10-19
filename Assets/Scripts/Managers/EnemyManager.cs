@@ -245,6 +245,29 @@ public class EnemyManager : MonoBehaviour, IGameManager
         if (spawned) BubblingSound.Play();
         SetWitchNumber();
     }
+
+    public void CheckSpawnPoints() {
+        bool spawned = false;
+        for (int i = SpawnPoints.Count - 1; i >= 0; i--) {
+            var spawnPoint = SpawnPoints[i];
+
+            if (spawnPoint.GetTime() <= 0) {
+                // check to see if an enemy or play is on it
+                var playerPos = Managers._turn.Player.GetPos();
+                if (playerPos != spawnPoint.GetPos() && Enemies.Find(e => e.GetPos() == spawnPoint.GetPos() && e.isAlive()) == null) {
+                    //spawn enemy 
+                    SpawnEnemy((int)spawnPoint.xPos, (int)spawnPoint.yPos);
+
+                    //remove point
+                    SpawnPoints.RemoveAt(i);
+                    Destroy(spawnPoint.gameObject);
+                    spawned = true;
+                }
+            }
+        }
+        if (spawned) BubblingSound.Play();
+        SetWitchNumber();
+    }
     
     public void ClearGame() {
         ClearEnemies();

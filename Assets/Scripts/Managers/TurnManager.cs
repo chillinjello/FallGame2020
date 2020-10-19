@@ -133,7 +133,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     private void PostBombTurn() {
-
+        Managers._enemy.CheckSpawnPoints();
         PostEveryTurn();
     }
 
@@ -214,7 +214,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
     private bool HandleGameStart() {
         if (gameStarted) return false;
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
             switch(currentMenuScreen) {
                 case MenuScreen.MainOption:
                     currentMenuScreen = MenuScreen.OptionBack;
@@ -457,7 +457,7 @@ public class TurnManager : MonoBehaviour, IGameManager {
     }
 
     private bool DebugMode() {
-        return false;
+        //return false;
         if (Input.GetKeyDown(KeyCode.R)) {
             RestartGame();
             return true;
